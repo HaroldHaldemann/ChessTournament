@@ -1,7 +1,4 @@
-import main_menu_view
-
-
-def export_menu():
+def export_menu_view():
 	response = ""
 	while response not in [f"{i}" for i in range(7)]:
 		print("\nMENU GENERATION DE RAPPORT")
@@ -21,7 +18,7 @@ def export_menu():
 			'3': all_tournaments,
 			'4': list_tours_tournament,
 			'5': list_matches_tournament,
-			'6': main_menu_view.main_menu,
+			'6': mmv.main_menu_view,
 		}
 		options[response]()
 

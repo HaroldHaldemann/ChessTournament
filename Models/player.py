@@ -37,3 +37,6 @@ class Player():
 			'elo_rating': player.elo_rating
 		}
 		PLAYER_TABLE.insert(serialized_player)
+
+
+	
