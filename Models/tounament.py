@@ -1,4 +1,9 @@
+from tinydb import TinyDB
+
 class Tournament():
+
+	DATABASE = TinyDB('db.json')
+	TOURNAMENT_TABLE = DATABASE.table('tournaments')
 
 	def __init__(
 			self,
@@ -32,3 +37,17 @@ class Tournament():
 			f"{self.time_control}\n"
 			f"{self.description}"
 		)
+
+
+	def add_tournament_to_db(tournament):
+		serialized_tournament = {
+			'name': tournament.name
+			'place': tournament.place
+			'date': tournament.date
+			'number_tours': tournament.number_turns
+			'tours': tournament.tours
+			'players': tournament.players
+			'time_control': tournament.time_control
+			'description': tournament.description
+		}
+		TOURNAMENT_TABLE.insert(serialized_tournament)
