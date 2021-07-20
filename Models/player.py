@@ -1,4 +1,9 @@
+from tinydb import TinyDB
+
 class Player():
+
+	DATABASE = TinyDB('db.json')
+	PLAYER_TABLE = DATABASE.table('players')
 
 	def __init__(
 			self,
@@ -22,3 +27,13 @@ class Player():
 			f"{self.gender}\n"
 			f"{self.elo_rating}"
 		)
+
+	def add_player_to_db(player):
+		serialized_player = {
+			'first_name': player.first_name
+			'last_name': player.last_name
+			'birth_date': player.birth_date
+			'gender': player.gender
+			'elo_rating': player.elo_rating
+		}
+		PLAYER_TABLE.insert(serialized_player)
