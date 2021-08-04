@@ -10,44 +10,41 @@ class Tournament():
 			name,
 			place,
 			date,
-			tours,
-			players,
 			time_control,
 			description,
-			number_turns=4,
+			number_rounds=4,
 		):
 		self.name = name
 		self.place = place
 		self.date = date
-		self.number_turns = number_turns
-		self.tours = tours
-		self.players = players
 		self.time_control = time_control
 		self.description = description
+		self.number_rounds = number_rounds
 
 
 	def __str__(self):
 		return (
 			f"{self.name}\n"
 			f"{self.place}\n"
-			f"{str(self.date)}\n"
-			f"{self.number_turns}\n"
-			f"{self.tours}\n"
+			f"{self.date}\n"
+			f"{self.number_rounds}\n"
+			f"{self.rounds}\n"
 			f"{self.players}\n"
 			f"{self.time_control}\n"
 			f"{self.description}"
 		)
 
 
-	def add_tournament_to_db(tournament):
+	def add_tournament_to_db(self):
 		serialized_tournament = {
-			'name': tournament.name
-			'place': tournament.place
-			'date': tournament.date
-			'number_tours': tournament.number_turns
-			'tours': tournament.tours
-			'players': tournament.players
-			'time_control': tournament.time_control
-			'description': tournament.description
+			'name': self.name,
+			'place': self.place,
+			'date': self.date,
+			'number_rounds': self.number_rounds,
+			'rounds': self.rounds,
+			'players': self.players,
+			'time_control': self.time_control,
+			'description': self.description,
+			'finished': (len(self.rounds) == number_rounds),
 		}
-		TOURNAMENT_TABLE.insert(serialized_tournament)
+		self.TOURNAMENT_TABLE.insert(serialized_tournament)
