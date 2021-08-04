@@ -29,7 +29,7 @@ class MenuController():
 			'1': player_view.export_all_players,
 			'2': tournament_view.export_players,
 			'3': tournament_view.export_all_tournaments,
-			'4': tournament_view.export_tours,
+			'4': tournament_view.export_rounds,
 			'5': tournament_view.export_matches,
 			'6': menu_view.main_menu,
 		}
