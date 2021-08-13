@@ -2,7 +2,7 @@ from tinydb import TinyDB
 
 class Tournament():
 
-	DATABASE = TinyDB('db.json')
+	DATABASE = TinyDB('database.json')
 	TABLE = DATABASE.table('tournaments')
 
 	def __init__(
