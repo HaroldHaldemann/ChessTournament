@@ -11,7 +11,7 @@ class MenuController():
 			menu_view.main_menu()
 		tournament_view = tournaments_view.TournamentView()
 		options = {
-			'1': [tournament_view.new_tournament, 0],
+			'1': [tournament_view.new_tournament, None],
 			'2': [tournament_view.load_tournament, None],
 			'3': [menu_view.export_menu, None],
 			'4': [exit, None],
