@@ -5,51 +5,27 @@ class Tournament():
 	DATABASE = TinyDB('database.json')
 	TABLE = DATABASE.table('tournaments')
 
-	def __init__(
+	def add_tournament_to_db(
 			self,
-			name="",
-			place="",
-			date="",
-			time_control="",
-			description="",
+			name,
+			place,
+			date,
+			time_control,
+			description,
 			number_rounds=4,
-			rounds=[],
 			players=[],
+			rounds=[],
 		):
-		self.name = name
-		self.place = place
-		self.date = date
-		self.time_control = time_control
-		self.description = description
-		self.number_rounds = number_rounds
-		self.rounds = rounds
-		self.players = players
-
-
-	def __str__(self):
-		return (
-			f"{self.name}\n"
-			f"{self.place}\n"
-			f"{self.date}\n"
-			f"{self.number_rounds}\n"
-			f"{self.rounds}\n"
-			f"{self.players}\n"
-			f"{self.time_control}\n"
-			f"{self.description}"
-		)
-
-
-	def add_tournament_to_db(self):
 		serialized_tournament = {
-			'name': self.name,
-			'place': self.place,
-			'date': self.date,
-			'number_rounds': self.number_rounds,
-			'rounds': self.rounds,
-			'players': self.players,
-			'time_control': self.time_control,
-			'description': self.description,
-			'finished': (len(self.rounds) == self.number_rounds),
+			'name': name,
+			'place': place,
+			'date': date,
+			'number_rounds': number_rounds,
+			'time_control': time_control,
+			'description': description,
+			'players': players,
+			'rounds': rounds,
+			'finished': (len(rounds) == number_rounds),
 		}
 		self.TABLE.insert(serialized_tournament)
 
