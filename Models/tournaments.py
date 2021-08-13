@@ -3,16 +3,18 @@ from tinydb import TinyDB
 class Tournament():
 
 	DATABASE = TinyDB('db.json')
-	TOURNAMENT_TABLE = DATABASE.table('tournaments')
+	TABLE = DATABASE.table('tournaments')
 
 	def __init__(
 			self,
-			name,
-			place,
-			date,
-			time_control,
-			description,
+			name="",
+			place="",
+			date="",
+			time_control="",
+			description="",
 			number_rounds=4,
+			rounds=[],
+			players=[],
 		):
 		self.name = name
 		self.place = place
@@ -20,6 +22,8 @@ class Tournament():
 		self.time_control = time_control
 		self.description = description
 		self.number_rounds = number_rounds
+		self.rounds = rounds
+		self.players = players
 
 
 	def __str__(self):
@@ -45,6 +49,9 @@ class Tournament():
 			'players': self.players,
 			'time_control': self.time_control,
 			'description': self.description,
-			'finished': (len(self.rounds) == number_rounds),
+			'finished': (len(self.rounds) == self.number_rounds),
 		}
-		self.TOURNAMENT_TABLE.insert(serialized_tournament)
+		self.TABLE.insert(serialized_tournament)
+
+	def get_name_tournaments(self):
+		return [tournament['name'] for tournament in self.TABLE]

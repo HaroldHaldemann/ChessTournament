@@ -1,9 +1,10 @@
 from tinydb import TinyDB
+from operator import itemgetter
 
 class Player():
 
 	DATABASE = TinyDB('db.json')
-	PLAYER_TABLE = DATABASE.table('players')
+	TABLE = DATABASE.table('players')
 
 	def __init__(
 			self,
@@ -36,7 +37,12 @@ class Player():
 			'gender': player.gender,
 			'ranking': player.ranking,
 		}
-		self.PLAYER_TABLE.insert(serialized_player)
+		self.TABLE.insert(serialized_player)
+
+	def get_all_players(self):
+		sorted_players = sorted(self.TABLE.all(), key=itemgetter('last_name', 'first_name'))
+
+
 
 
 	
