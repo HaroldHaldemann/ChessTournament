@@ -1,10 +1,21 @@
 from Views import tournaments_view
 from Models import tournaments
+from Models import players
+from . import utils
 
 class TournamentController():
 
 	def new_tournament(self, name, place, date, time_control, description, number_rounds):
-		pass
+		tournament = tournaments.Tournament(name, place, date, time_control, description, number_rounds)
+		tournament.add_tournament_to_db
+		player = players.Player()
+		all_players = player.get_all_players()
+		tournament_view = tournaments_view.TournamentView()
+		tournament_view.add_player_to_tournament(all_players)
+
+
+	def add_player_to_tournament(self, all_players, players):
+		
 
 
 ###############################################################
@@ -35,8 +46,8 @@ class TournamentController():
 		if len(split_date) != 3:
 			print("Date invalide: format invalide")
 			return False
-		for e in split_date:
-			if not e.isdigit():
+		for day_month_year in split_date:
+			if not day_month_year.isdigit():
 				print("Date invalide: veuillez utiliser des nombres")
 				return False
 		day = int(split_date[0])
@@ -77,9 +88,11 @@ class TournamentController():
 		return True
 
 
-	def check_args(self, step, args, **kwargs):
+	def check_args(self, args, **kwargs):
 		key = list(kwargs.keys())[0]
 		value = list(kwargs.values())[0]
+		util = utils.Util()
+		value = util.input_format(value)
 		tournament_view = tournaments_view.TournamentView()
 		option = {
 			'name': self.check_name,
@@ -93,18 +106,6 @@ class TournamentController():
 		if option[key](value):
 			if key == 'response':
 				if value == '1':
-					tournament_view.new_tournament(step=1, args={})
-				if value == '2':
-					self.new_tournament(
-						args['name'],
-						args['place'],
-						args['date'],
-						args['time_control'],
-						args['description'],
-						args['number_rounds'],
-					)
-			step += 1
+					tournament_view.new_tournament(args={})
 			args[key] = value
-		tournament_view.new_tournament(step, args)
-
-	
+		tournament_view.new_tournament(args)
