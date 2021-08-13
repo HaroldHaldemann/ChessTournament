@@ -1,6 +1,34 @@
 from Views import tournaments_view
+from Models import tournaments
 
 class TournamentController():
+
+	def new_tournament(self, name, place, date, time_control, description, number_rounds):
+		pass
+
+
+###############################################################
+#  UTILS                                                      #
+###############################################################
+
+
+	def check_name(self, name):
+		if name == "":
+			print("Nom invalide: entrée vide")
+			return False
+		tournament = tournaments.Tournament()
+		if name in tournament.get_name_tournaments():
+			print("Nom invalide: nom déjà existant")
+			return False
+		return True
+
+
+	def check_place(self, place):
+		if place == "":
+			print("Lieu invalide: entrée vide")
+			return False
+		return True
+
 
 	def check_date(self, date):
 		split_date = date.split('/')
@@ -22,11 +50,13 @@ class TournamentController():
 			return False
 		return True
 
+
 	def check_time_control(self, time_control):
 		if time_control not in ['1', '2', '3']:
 			print("Gestion de temps invalide")
 			return False
 		return True
+
 
 	def check_number_rounds(self, number_rounds):
 		if type(number_rounds) == int:
@@ -39,24 +69,42 @@ class TournamentController():
 			return False
 		return True
 
-	def check_args(self, step, **kwargs):
+
+	def check_response(self, response):
+		if response not in ['1', '2']:
+			print("Réponse invalide")
+			return False
+		return True
+
+
+	def check_args(self, step, args, **kwargs):
 		key = list(kwargs.keys())[0]
 		value = list(kwargs.values())[0]
+		tournament_view = tournaments_view.TournamentView()
 		option = {
-			'name': lambda x: True,
-			'place': lambda x: True,
+			'name': self.check_name,
+			'place': self.check_place,
 			'date': self.check_date,
 			'time_control': self.check_time_control,
 			'description': lambda x: True,
 			'number_rounds': self.check_number_rounds,
+			'response': self.check_response,
 		}
-		tournament_view = tournaments_view.TournamentView()
 		if option[key](value):
+			if key == 'response':
+				if value == '1':
+					tournament_view.new_tournament(step=1, args={})
+				if value == '2':
+					self.new_tournament(
+						args['name'],
+						args['place'],
+						args['date'],
+						args['time_control'],
+						args['description'],
+						args['number_rounds'],
+					)
 			step += 1
-		print(key)
-		print(value)
-		print(step)
-		tournament_view.new_tournament(step)
+			args[key] = value
+		tournament_view.new_tournament(step, args)
 
-	def new_tournament(self):
-		pass
+	
