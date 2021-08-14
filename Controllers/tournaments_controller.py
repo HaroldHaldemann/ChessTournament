@@ -6,11 +6,25 @@ from . import utils
 
 class TournamentController():
 
-	def new_tournament(self, name, place, date, time_control, description, number_rounds):
+	def new_tournament(self, args):
 		tournament = tournaments.Tournament()
-		tournament.add_tournament_to_db(name, place, date, time_control, description, number_rounds)
+		tournament.add_tournament_to_db(
+			args['name'], 
+			args['place'], 
+			args['date'], 
+			args['time_control'], 
+			args['description'], 
+			args['number_rounds']
+		)
 		player = players.Player()
 		all_players = player.get_all_players()
+		if len(all_players) < 8:
+			print("\nATTENTION")
+			print("Le nombre de joueur est insuffisant pour un tournoi")
+			print("Vous allez être redirigé vers le menu d'ajout de joueur")
+			print("Vous pourrez charger ce tournoi à partir du menu principal")
+			player_view = players_view.PlayerView()
+			player_view.add_player_to_db()
 		tournament_view = tournaments_view.TournamentView()
 		tournament_view.add_player_to_tournament(all_players)
 
@@ -42,16 +56,17 @@ class TournamentController():
 		option = {
 			'name': self.check_name,
 			'place': self.check_place,
-			'date': self.check_date,
+			'date': util.check_date,
 			'time_control': self.check_time_control,
-			'description': lambda x: True,
+			'description': self.check_description,
 			'number_rounds': self.check_number_rounds,
 			'response': self.check_response,
 		}
 		if option[key](value):
 			if key == 'response':
 				if value == '1':
-					tournament_view.new_tournament(args={})
+					tournament_view.new_tournament()
+			value = option[key](value)
 			args[key] = value
 		tournament_view.new_tournament(args)
 
@@ -64,61 +79,49 @@ class TournamentController():
 		if name in tournament.get_name_tournaments():
 			print("Nom invalide: nom déjà existant")
 			return False
-		return True
+		return name
 
 
 	def check_place(self, place):
 		if place == "":
 			print("Lieu invalide: entrée vide")
 			return False
-		return True
-
-
-	def check_date(self, date):
-		split_date = date.split('/')
-		if len(split_date) != 3:
-			print("Date invalide: format invalide")
-			return False
-		for day_month_year in split_date:
-			if not day_month_year.isdigit():
-				print("Date invalide: veuillez utiliser des nombres")
-				return False
-		day = int(split_date[0])
-		month = int(split_date[1])
-		year = int(split_date[2])
-		days_by_month = [None, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-		if year%4 == 0 and (year%100 != 0 or year%400 == 0):
-			days_by_month[2] = 29
-		if not (0 < month < 13 and 0 < day <= days_by_month[month]):
-			print("Date invalide: cette date n'existe pas")
-			return False
-		return True
+		return place
 
 
 	def check_time_control(self, time_control):
 		if time_control not in ['1', '2', '3']:
 			print("Gestion de temps invalide")
 			return False
-		return True
+		option = {
+			'1': "bullet",
+			'2': "blitz",
+			'3': "coup rapide",
+		}
+		return option[time_control]
 
+	def check_description(self, description):
+		if description == "":
+			description = " "
+		return description
 
 	def check_number_rounds(self, number_rounds):
 		if type(number_rounds) == int:
-			return True
+			return number_rounds
 		if not number_rounds.isdigit():
 			print("Nombre de tours invalide")
 			return False
 		if not (0 < int(number_rounds) < 8):
 			print("Nombre de tours invalide")
 			return False
-		return True
+		return number_rounds
 
 
 	def check_response(self, response):
 		if response not in ['1', '2']:
 			print("Réponse invalide")
 			return False
-		return True
+		return response
 
 
 	def check_player(self, all_players, input_player):
