@@ -15,7 +15,7 @@ class TournamentView():
 				tournament_controller.check_args(args, place=place)
 			elif step == 5:
 				print("Veuillez renseigner la date de ce tournoi")
-				date = input("Format: JJ/DD/AAAA\n")
+				date = input("Format: JJ/MM/AAAA\n")
 				tournament_controller.check_args(args, date=date)
 			elif step == 4:
 				print("Veuillez renseigner votre controle du temps")
@@ -33,7 +33,7 @@ class TournamentView():
 				number_rounds = input("Nombre entre 1 et 7 compris (Par défault: 4)\n") or 4
 				tournament_controller.check_args(args, number_rounds=number_rounds)
 			elif step == 1:
-				print("RESUME DU TOURNOI")
+				print("Résumé du tournoi")
 				print(f"Nom: {args['name']}")
 				print(f"Lieu: {args['place']}")
 				print(f"Date: {args['date']}")
@@ -45,14 +45,7 @@ class TournamentView():
 				print("2- Sauvegarder et continuer")
 				response = input("Veuillez sélectionner une des options disponibles en entrant son numéro\n")
 				tournament_controller.check_args(args, response=response)
-		tournament_controller.new_tournament(
-			name=args['name'],
-			place=args['place'],
-			date=args['date'],
-			time_control=args['time_control'],
-			description=args['description'],
-			number_rounds=args['number_rounds'],
-		)
+		tournament_controller.new_tournament(args)
 
 
 	def add_player_to_tournament(self, all_players, players=[]):
@@ -73,8 +66,6 @@ class TournamentView():
 		players.append(player)
 		tournament_controller = tournaments_controller.TournamentController()
 		tournament_controller.add_player_to_tournament(all_players, players)
-
-
 
 
 	def load_tournament():
