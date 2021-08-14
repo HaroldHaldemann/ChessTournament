@@ -10,16 +10,15 @@ class MenuController():
 			print("\nCommande incorrect, veuillez entrer un numéro valide")
 			menu_view.main_menu()
 		tournament_view = tournaments_view.TournamentView()
+		player_view = players_view.PlayerView()
 		options = {
-			'1': [tournament_view.new_tournament, None],
-			'2': [tournament_view.load_tournament, None],
-			'3': [menu_view.export_menu, None],
-			'4': [exit, None],
+			'1': tournament_view.new_tournament,
+			'2': tournament_view.load_tournament,
+			'3': player_view.add_player_to_db,
+			'4': menu_view.export_menu,
+			'5': exit,
 		}
-		args = options[response][1]
-		if args != None:
-			options[response][0](args)
-		options[response][0]()
+		options[response]()
 
 	def export_menu(self, response):
 		menu_view = menus_view.MenuView()
