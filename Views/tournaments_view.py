@@ -51,34 +51,43 @@ class TournamentView():
 	def add_player_to_tournament(self, all_players, players=[]):
 		print("\nAJOUT DE JOUEURS")
 		print(f"Veuillez ajouter {8-len(players)} joueurs dans le tournoi")
-		print("0- Ajouter de nouveaux joueurs à la base de données")
-		print("Liste des joueurs:")
+		print("\n0- Ajouter de nouveaux joueurs à la base de données")
+		print("\nListe des joueurs:")
 		for index, player in enumerate(all_players):
-			print(
-				f"{index + 1}- " \
-				f"Nom: {player['last_name']} " \
-				f"Prénom: {player['first_name']}, " \
-				f"Date de naissance: {player['bitrth_date']}, " \
-				f"Genre: {player['gender']}, " \
-				f"Classement: {player['ranking']}" 
-			)
+			print(f"\n{index + 1}- Nom: {player['last_name']} {player['first_name']}")
+			print(f"Date de naissance: {player['birth_date']}")
+			print(f"Genre: {player['gender']}")
+			print(f"Classement: {player['ranking']}")
 		player = input("Veuillez sélectionner une des options disponibles en entrant son numéro\n")
 		players.append(player)
 		tournament_controller = tournaments_controller.TournamentController()
 		tournament_controller.add_player_to_tournament(all_players, players)
 
 
-	def load_tournament():
+	def load_tournament(self, list_tournaments):
+		print("\nCHARGEMENT D'UN TOURNOI")
+		print("0- Créer un nouveau tournoi")
+		print("Liste des tournois:")
+		for index, tournament in enumerate(list_tournaments):
+			print(
+				f"{index+1}- " \
+				f"Nom: {tournament['name']}, " \
+				f"Lieu: {tournament['place']}, " \
+				f"Date: {tournament['date']}, " \
+				f"Gestion du temps: {tournament['time_control']}"
+			)
+		response = input("Veuillez sélectionner une des options disponibles en entrant son numéro\n")
+		tournament_controller = tournaments_controller.TournamentController()
+		tournament_controller.load_tournament(list_tournaments, response=response, finished="")
+
+	def export_players(self):
 		pass
 
-	def export_players():
+	def export_all_tournaments(self):
 		pass
 
-	def export_all_tournaments():
+	def export_rounds(self):
 		pass
 
-	def export_rounds():
-		pass
-
-	def export_matches():
+	def export_matches(self):
 		pass
