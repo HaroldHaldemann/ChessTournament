@@ -17,13 +17,23 @@ class Util():
 			if not day_month_year.isdigit():
 				print("Date invalide: veuillez utiliser des nombres")
 				return False
-		day = int(split_date[0])
-		month = int(split_date[1])
-		year = int(split_date[2])
+		sday = split_date[0]
+		smonth = split_date[1]
+		syear = split_date[2]
+		if len(sday) == 1:
+			sday = "0" + sday
+		if len(smonth) == 1:
+			smonth = "0" + smonth
+		if len(syear) < 4:
+			syear = ("0"*(4-len(syear))) + syear
+		date = '/'.join([sday, smonth, syear])
+		day = int(sday)
+		month = int(smonth)
+		year = int(syear)
 		days_per_month = [None, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 		if year%4 == 0 and (year%100 != 0 or year%400 == 0):
-			days_by_month[2] = 29
-		if not (month <= 12 and day <= days_per_month[month]):
+			days_per_month[2] = 29
+		if not (0 < month <= 12 and 0 < day <= days_per_month[month] and year < 10000):
 			print("Date invalide: cette date n'existe pas")
 			return False
 		return date
