@@ -38,6 +38,7 @@ class PlayerView():
 				print("1- Modifier")
 				print("2- Sauvegarder et ajouter un nouveau joueur")
 				print("3- Sauvegarder et revenir au menu principal")
+				print("4- Annuler et revenir au menu principal")
 				response = input("Veuillez sélectionner une des options disponibles en entrant son numéro\n")
 				player_controller.check_args(args, response=response)
 		player_controller.add_player_to_db(args)
