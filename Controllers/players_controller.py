@@ -8,19 +8,24 @@ class PlayerController():
 	def add_player_to_db(self, args):
 		player = players.Player()
 		player.add_player_to_db(
-			args['first_name'],
 			args['last_name'],
+			args['first_name'],
 			args['birth_date'],
 			args['gender'],
 			args['ranking'],
 		)
 		player_view = players_view.PlayerView()
 		menu_view = menus_view.MenuView()
-		option = {
-			'2': player_view.add_player_to_db,
-			'3': menu_view.main_menu,
+		options = {
+			'2': [player_view.add_player_to_db, {}],
+			'3': [menu_view.main_menu, None],
 		}
-		option[args['response']]()
+		response = args['response']
+		args = options[response][1]
+		if args != None:
+			options[response][0](args)
+		options[response][0]()
+
 
 ###############################################################
 #  UTILS                                                      #
@@ -32,7 +37,7 @@ class PlayerController():
 		value = list(kwargs.values())[0]
 		util = utils.Util()
 		value = util.input_format(value)
-		option = {
+		options = {
 			'last_name': self.check_name,
 			'first_name': self.check_name,
 			'birth_date': util.check_date,
@@ -41,11 +46,15 @@ class PlayerController():
 			'response': self.check_response,
 		}
 		player_view = players_view.PlayerView()
-		if option[key](value):
+		if options[key](value):
 			if key == 'response':
 				if value == '1':
-					player_view.add_player_to_db()
-			value = option[key](value)
+					args = {}
+					player_view.add_player_to_db(args)
+				if value == '4':
+					menu_view = menus_view.MenuView()
+					menu_view.main_menu()
+			value = options[key](value)
 			args[key] = value
 		if len(args) == 3:
 			player = players.Player()
@@ -66,11 +75,11 @@ class PlayerController():
 		if gender not in ['1', '2']:
 			print("Genre invalide")
 			return False
-		option = {
+		options = {
 			'1': "masculin",
 			'2': "féminin",
 		}
-		return option[gender]
+		return options[gender]
 
 
 	def check_ranking(self, ranking):
@@ -79,8 +88,9 @@ class PlayerController():
 			return False
 		return ranking
 
+
 	def check_response(self, response):
-		if response not in ['1', '2', '3']:
+		if response not in ['1', '2', '3', '4']:
 			print("Réponse invalide")
 			return False
 		return response
