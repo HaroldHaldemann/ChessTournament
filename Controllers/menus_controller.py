@@ -16,7 +16,7 @@ class MenuController():
 		if Util.check_reponse(response, options):
 			MenuView.main_menu()
 			
-		options[response]()
+		Util.call_options(options, response)
 
 
 	@staticmethod
@@ -32,7 +32,7 @@ class MenuController():
 		if Util.check_reponse(response, options):
 			MenuView.main_menu()
 
-		options[response]()
+		Util.call_options(options, response)
 
 
 	@staticmethod
@@ -51,9 +51,4 @@ class MenuController():
 		if Util.check_reponse(response, options):
 			MenuView.main_menu()
 
-		args = options[response][1]
-
-		if args != None:
-			options[response][0](list_tournaments=args)
-		else:
-			options[response][0]()
+		Util.call_options(options, response)
