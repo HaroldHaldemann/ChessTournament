@@ -1,80 +1,87 @@
-from Models import players
-from Views import players_view
-from Views import menus_view
-from . import utils
+import Views
+import Models
+from .utils import Util
 
 class PlayerController():
 
-	def add_player_to_db(self, args):
-		player = players.Player()
-		player.add_player_to_db(
+
+	@staticmethod
+	def add_player_to_db(args):
+		player = Models.Player(
 			args['last_name'],
 			args['first_name'],
 			args['birth_date'],
 			args['gender'],
 			args['ranking'],
 		)
-		player_view = players_view.PlayerView()
-		menu_view = menus_view.MenuView()
+		player.remove_from_db()
+		player.add_to_db()
+
 		options = {
-			'2': [player_view.add_player_to_db, {}],
-			'3': [menu_view.main_menu, None],
+			'2': [Views.PlayerView.add_player_to_db, {}],
+			'3': [Views.MenuView.main_menu, None],
 		}
 		response = args['response']
-		args = options[response][1]
-		if args != None:
-			options[response][0](args)
-		options[response][0]()
+		Util.call_options(options, response)
 
 
-###############################################################
-#  UTILS                                                      #
-###############################################################
+#############################################
+# 									UTILS 									#
+#############################################
 
 	
-	def check_args(self, args, **kwargs):
+	@classmethod
+	def check_args(cls, args, **kwargs):
 		key = list(kwargs.keys())[0]
 		value = list(kwargs.values())[0]
-		util = utils.Util()
-		value = util.input_format(value)
+		value = Util.input_format(value)
+
 		options = {
-			'last_name': self.check_name,
-			'first_name': self.check_name,
-			'birth_date': util.check_date,
-			'gender': self.check_gender,
-			'ranking': self.check_ranking,
-			'response': self.check_response,
+			'last_name': cls.check_name,
+			'first_name': cls.check_name,
+			'birth_date': Util.check_date,
+			'gender': cls.check_gender,
+			'ranking': cls.check_ranking,
+			'response': Util.check_response,
 		}
-		player_view = players_view.PlayerView()
-		if options[key](value):
-			if key == 'response':
-				if value == '1':
-					args = {}
-					player_view.add_player_to_db(args)
-				if value == '4':
-					menu_view = menus_view.MenuView()
-					menu_view.main_menu()
-			value = options[key](value)
+		value = options[key](value)
+
+		if value:
 			args[key] = value
+
+			if key == 'response':
+				options = {
+					'1': [Views.PlayerView.add_player_to_db, {}],
+					'2': [cls.add_player_to_db, args],
+					'3': [cls.add_player_to_db, args],
+					'4': [Views.MenuView.main_menu, None],
+				}
+				Util.call_options(options, response)
+		
 		if len(args) == 3:
-			player = players.Player()
-			if player.get_player(args['last_name'], args['first_name'], args['birth_date']):
+
+			if Models.Player.get_from_db(args['last_name'], args['first_name'], args['birth_date']):
 				print("Ce joueur existe déjà")
 				args = {}
-		player_view.add_player_to_db(args)
+
+		Views.PlayerView.add_player_to_db(args)
 
 
-	def check_name(self, name):
+	@staticmethod
+	def check_name(name):
 		if name == "":
 			print("Nom invalide: entrée vide")
 			return False
+
 		return name
 
 
-	def check_gender(self, gender):
+	@staticmethod
+	def check_gender(gender):
 		if gender not in ['1', '2']:
 			print("Genre invalide")
 			return False
+
 		options = {
 			'1': "masculin",
 			'2': "féminin",
@@ -82,15 +89,10 @@ class PlayerController():
 		return options[gender]
 
 
-	def check_ranking(self, ranking):
+	@staticmethod
+	def check_ranking(ranking):
 		if not ranking.isdigit():
 			print("Classement invalide")
 			return False
+
 		return ranking
-
-
-	def check_response(self, response):
-		if response not in ['1', '2', '3', '4']:
-			print("Réponse invalide")
-			return False
-		return response
