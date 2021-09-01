@@ -1,14 +1,56 @@
+import datetime
+
 class Util():
 
-	def input_format(self, string_input):
+	@staticmethod
+	def input_format(string_input):
 		if type(string_input) == str:
 			string_input = string_input.lower()
+
 			split_input = string_input.split(" ")
 			string_input = ''.join(split_input)
+
 		return string_input
 
 
-	def check_date(self, date):
+	@staticmethod
+	def call_options(options, response):
+		if is_instance(option[response], list):
+			params = options[response][1]
+
+			if params != None:
+				options[response][0](params)
+
+			else:
+				options[response][0]()
+		else:
+			option[response]()
+
+
+	@staticmethod
+	def check_date(date):
+		try:
+			date = datetime.date.fromisoformat(date)
+
+		except:
+			print('Date invalide')
+			return False
+
+		else:
+			return date
+
+
+	@staticmethod
+	def check_response(response, options):
+		if response not in [f"{index + 1}" for index in len(options)]:
+			print("Réponse invalide")
+			return False
+
+		return response
+
+
+	@staticmethod
+	def check_date_old(date):
 		split_date = date.split('/')
 		if len(split_date) != 3:
 			print("Date invalide: format invalide")
