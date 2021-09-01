@@ -1,0 +1,3 @@
+from .menus_controller import MenuController
+from .players_controller import PlayerController
+from .tournaments_controller import TournamentController
