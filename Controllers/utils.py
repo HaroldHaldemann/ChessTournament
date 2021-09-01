@@ -14,17 +14,14 @@ class Util():
 
 
 	@staticmethod
-	def call_options(options, response):
+	def call_options(options, response, *args):
 		if is_instance(option[response], list):
+
 			params = options[response][1]
+			options[response][0](params, *args)
 
-			if params != None:
-				options[response][0](params)
-
-			else:
-				options[response][0]()
 		else:
-			option[response]()
+			option[response](*args)
 
 
 	@staticmethod
@@ -41,8 +38,8 @@ class Util():
 
 
 	@staticmethod
-	def check_response(response, options):
-		if response not in [f"{index + 1}" for index in len(options)]:
+	def check_response(len_options, response):
+		if response not in [f"{index + 1}" for index in range(len_options)]:
 			print("Réponse invalide")
 			return False
 
