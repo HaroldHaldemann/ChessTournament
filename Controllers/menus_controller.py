@@ -7,9 +7,9 @@ class MenuController():
 	@staticmethod
 	def main_menu(response):
 		options = {
-			'1': Views.TournamentView.new_tournament,
+			'1': [Views.TournamentView.new_tournament, {}],
 			'2': Views.MenuView.load_menu,
-			'3': Views.PlayerView.add_player_to_db,
+			'3': [Views.PlayerView.add_player_to_db, {}],
 			'4': Views.MenuView.export_menu,
 			'5': exit,
 		}
@@ -46,7 +46,7 @@ class MenuController():
 				Views.TournamentView.load_tournament,
 				Models.Tournament.get_finished_tournaments(),
 			],
-			'3': [Views.MenuView.main_menu, None],
+			'3': Views.MenuView.main_menu,
 		}
 		if Util.check_reponse(response, options):
 			MenuView.main_menu()
