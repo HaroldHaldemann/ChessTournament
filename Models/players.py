@@ -1,43 +1,56 @@
 from tinydb import TinyDB, Query
 from operator import itemgetter
+from dataclasses import dataclass
+import datetime
 
+DATABASE = TinyDB('database.json')
+TABLE = DATABASE.table('players')
+
+
+@dataclass
 class Player():
 
-	DATABASE = TinyDB('database.json')
-	TABLE = DATABASE.table('players')
+	last_name: str
+	first_name: str
+	birth_date: datetime.date
+	gender: str = ""
+	ranking: int = 0
 
-	def add_player_to_db(self, last_name, first_name, birth_date, gender, ranking):
+	def add_to_db(self):
 		serialized_player = {
-			'last_name': last_name,
-			'first_name': first_name,
-			'birth_date': birth_date,
-			'gender': gender,
-			'ranking': ranking,
+			'last_name': self.last_name,
+			'first_name': self.first_name,
+			'birth_date': self.birth_date,
+			'gender': self.gender,
+			'ranking': self.ranking,
 		}
-		self.TABLE.insert(serialized_player)
+		TABLE.insert(serialized_player)
 
 
-	def get_all_players(self):
-		return sorted(
-			self.TABLE.all(), 
-			key=itemgetter('last_name', 'first_name', 'birth_date'),
-		)
-
-	def remove_player_from_db(self, last_name, first_name, birth_date):
+	def remove_from_db(self):
 		Playert = Query()
 		if self.get_player(last_name, first_name, birth_date):
-			self.TABLE.remove(
-				(Player['last_name'] == last_name) & \
-				(Player['first_name'] == first_name) & \
-				(Player['birth_date'] == birth_date)
+			TABLE.remove(
+				(Player['last_name'] == self.last_name) & \
+				(Player['first_name'] == self.first_name) & \
+				(Player['birth_date'] == self.birth_date)
 			)
 
-	
-	def get_player(self, last_name, first_name, birth_date):
+
+	@staticmethod
+	def get_from_db(self, last_name, first_name, birth_date):
 		Player = Query()
-		player = self.TABLE.search(
+		player = TABLE.search(
 			(Player['last_name'] == last_name) & \
 			(Player['first_name'] == first_name) & \
 			(Player['birth_date'] == birth_date)
 		)
 		return player
+
+
+	@staticmethod
+	def get_all_players():
+		return sorted(
+			TABLE.all(), 
+			key=itemgetter('last_name', 'first_name', 'birth_date'),
+		)
