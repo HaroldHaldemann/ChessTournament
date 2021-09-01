@@ -1,61 +1,96 @@
 from tinydb import TinyDB, Query
-from operator import itemgetter
+from dataclasses import dataclass, field
+import datetime
+from typing import List
 
+DATABASE = TinyDB('database.json')
+TABLE = DATABASE.table('tournaments')
+
+
+@dataclass
 class Tournament():
 
-	DATABASE = TinyDB('database.json')
-	TABLE = DATABASE.table('tournaments')
+	name: str
+	place: str
+	date: datetime.date
+	time_control: str
+	description: str
+	players: List
+	rounds: List
+	number_rounds: int = 4
 
-	def add_tournament_to_db(
-			self,
-			name,
-			place,
-			date,
-			time_control,
-			description,
-			number_rounds=4,
-			players=[],
-			rounds=[],
-		):
-		serialized_tournament = {
-			'name': name,
-			'place': place,
-			'date': date,
-			'number_rounds': number_rounds,
-			'time_control': time_control,
-			'description': description,
-			'players': players,
-			'rounds': rounds,
-			'finished': (len(rounds) == number_rounds),
-		}
-		self.TABLE.insert(serialized_tournament)
 
-	def remove_tournament_from_db(self, name):
+	def add_to_db(self):
+		tournament = self.is_in_db(self.name)
+
+		if tournament:
+			Tournament = Query()
+
+			if self.number_rounds != 4:
+				TABLE.update(
+						{'number_rounds': self.rounds},
+						Tournament.name == tournament['name'],
+					)
+			if len(self.rounds) > len(tournament['rounds']):
+				TABLE.update(
+					{'rounds': self.rounds},
+					Tournament.name == tournament['name'],
+				)
+			if len(self.players) > len(tournament['players']):
+				TABLE.update(
+						{'players': self.players},
+						Tournament.name == tournament['name'],
+					)
+		else:
+			serialized_tournament = {
+				'name': self.name,
+				'place': self.place,
+				'date': self.date.isoformat(),
+				'number_rounds': self.number_rounds,
+				'time_control': self.time_control,
+				'description': self.description,
+				'players': self.players,
+				'rounds': self.rounds,
+				'finished': (len(self.rounds) == self.number_rounds),
+			}
+			TABLE.insert(serialized_tournament)
+
+
+	def remove_from_db(self):
 		Tournament = Query()
-		if self.TABLE.search(Tournament.name == name):
-			self.TABLE.remove(Tournament.name == name)
 
-	def get_name_tournaments(self):
-		return [tournament['name'] for tournament in self.TABLE.all()]
+		if self.is_in_db(self.name):
+			TABLE.remove(Tournament.name == self.name)
 
-	def get_all_tournament(self):
+
+	@staticmethod
+	def get_all_tournament():
 		Tournament = Query()
-		tournaments = self.TABLE.all()
-		dates = [tournament['date'] for tournament in tournaments]
-		split_dates = [date.split("/") for date in dates]
-		sorted_split_dates = sorted(
-			split_dates,
-			key=itemgetter(2, 1, 0)
+		tournaments = TABLE.all()
+
+		sorted_dates = sorted(
+			[tournament['date'] for tournament in tournaments],
+			reverse=True,
 		)
-		sorted_dates = ['/'.join(split_date) for split_date in sorted_split_dates]
 		sorted_tournaments = []
-		for date in sorted_dates:
-			sorted_tournaments += self.TABLE.search(Tournament.date == date)
-		return sorted_tournaments
-		
-	def get_unfinished_tournaments(self):
-		return [tournament for tournament in self.get_all_tournament() if not tournament['finished']]
 
-	def get_finished_tournaments(self):
+		for date in sorted_dates:
+			sorted_tournaments += TABLE.search(Tournament.date == date)
+			
+		return sorted_tournaments
+
+	
+	@staticmethod
+	def is_in_db(name):
 		Tournament = Query()
-		return [tournament for tournament in self.get_all_tournament() if tournament['finished']]
+		return TABLE.search(Tournament.name == name)
+
+	@classmethod
+	def get_unfinished_tournaments(cls):
+		return [tournament for tournament in cls.get_all_tournament() if not tournament['finished']]
+
+
+	@classmethod
+	def get_finished_tournaments(cls):
+		Tournament = Query()
+		return [tournament for tournament in cls.get_all_tournament() if tournament['finished']]
