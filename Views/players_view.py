@@ -6,19 +6,19 @@ class PlayerView():
 
 
 	@classmethod
-	def add_player_to_db(cls, args={}):
+	def add_player_to_db(cls, args):
 		step = len(args)
 		print("\nCREATION D'UN NOUVEAU JOUEUR")
 
-		options = [
-			cls.add_player_last_name,
-			cls.add_player_first_name,
-			cls.add_player_birth_date,
-			cls.add_player_gender,
-			cls.add_player_ranking,
-			cls.add_player_response,
-		]
-		options[step](args)
+		options = {
+			1: cls.add_player_last_name,
+			2: cls.add_player_first_name,
+			3: cls.add_player_birth_date,
+			4: cls.add_player_gender,
+			5: cls.add_player_ranking,
+			6: cls.add_player_response,
+		}
+		Controllers.Util.call_options(options, step)
 
 
 	@staticmethod

@@ -9,16 +9,16 @@ class TournamentView():
 		step = len(args)
 		print("\nCREATION D'UN NOUVEAU TOURNOI")
 
-		options = [
-			cls.new_tournament_name,
-			cls.new_tournament_place,
-			cls.new_tournament_date,
-			cls.new_tournament_time_control,
-			cls.new_tournament_description,
-			cls.new_tournament_number_rounds,
-			cls.new_tournament_response,
-		]
-		options[step](args)
+		options = {
+			1: cls.new_tournament_name,
+			2: cls.new_tournament_place,
+			3: cls.new_tournament_date,
+			4: cls.new_tournament_time_control,
+			5: cls.new_tournament_description,
+			6: cls.new_tournament_number_rounds,
+			7: cls.new_tournament_response,
+		}
+		Controllers.Util.call_options(options, step)
 
 
 	@staticmethod
@@ -127,6 +127,7 @@ class TournamentView():
 		print("1- Confimer et sauvegarder")
 		print("2- Modifier la séléction")
 		response = input("Veuillez sélectionner une des options disponibles en entrant son numéro\n")
+
 		Controllers.TournamentController.confirm_players(all_players, players, response)
 
 
