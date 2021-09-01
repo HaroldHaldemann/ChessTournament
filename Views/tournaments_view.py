@@ -5,7 +5,7 @@ class TournamentView():
 ##### NEW TOURNAMENT #####
 
 	@classmethod
-	def new_tournament(cls, args={}):
+	def new_tournament(cls, args):
 		step = len(args)
 		print("\nCREATION D'UN NOUVEAU TOURNOI")
 
@@ -93,7 +93,7 @@ class TournamentView():
 
 
 	@staticmethod
-	def add_player_to_tournament(all_players, players=[]):
+	def add_player_to_tournament(all_players, players):
 		print("\nAJOUT DE JOUEURS")
 		print(f"Veuillez ajouter {8-len(players)} joueurs dans le tournoi")
 
