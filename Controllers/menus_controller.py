@@ -7,17 +7,18 @@ class MenuController():
 	@staticmethod
 	def main_menu(response):
 		options = {
-			'1': [Views.TournamentView.new_tournament, {}],
+			'1': [Views.TournamentView.new_tournament, Models.Tournament(), 0],
 			'2': Views.MenuView.load_menu,
-			'3': [Views.PlayerView.add_player_to_db, {}],
-			'4': Views.MenuView.export_menu,
-			'5': exit,
+			'3': [Views.PlayerView.add_player_to_db, Models.Player(), 0],
+			'4': [Views.PlayerView.load_player, Models.Player.get_all_players()],
+			'5': Views.MenuView.export_menu,
+			'6': exit,
+			'7': Models.Round.test
 		}
-		if Util.check_reponse(response, options):
-			MenuView.main_menu()
+		if not Util.check_response(len(options), response):
+			Views.MenuView.main_menu()
 			
 		Util.call_options(options, response)
-
 
 	@staticmethod
 	def export_menu(response):
@@ -27,13 +28,12 @@ class MenuController():
 			'3': Views.TournamentView.export_all_tournaments,
 			'4': Views.TournamentView.export_rounds,
 			'5': Views.TournamentView.export_matches,
-			'6': MenuView.main_menu,
+			'6': Views.MenuView.main_menu,
 		}
-		if Util.check_reponse(response, options):
-			MenuView.main_menu()
+		if not Util.check_response(len(options), response):
+			Views.MenuView.export_menu()
 
 		Util.call_options(options, response)
-
 
 	@staticmethod
 	def load_menu(response):
@@ -48,7 +48,7 @@ class MenuController():
 			],
 			'3': Views.MenuView.main_menu,
 		}
-		if Util.check_reponse(response, options):
-			MenuView.main_menu()
+		if not Util.check_response(len(options), response):
+			Views.MenuView.load_menu()
 
 		Util.call_options(options, response)
