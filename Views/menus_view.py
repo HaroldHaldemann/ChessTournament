@@ -8,12 +8,12 @@ class MenuView():
 		print("1- Créer un nouveau tournoi")
 		print("2- Charger un tournoi")
 		print("3- Ajouter des joueurs dans la base de données")
-		print("4- Générer un rapport")
-		print("5- Quitter le programme\n")
+		print("4- Charger un joueur")
+		print("5- Générer un rapport")
+		print("6- Quitter le programme\n")
 
 		response = input("Veuillez sélectionner une des options disponibles en entrant son numéro\n")
 		Controllers.MenuController.main_menu(response)
-
 
 	@staticmethod
 	def export_menu():
@@ -27,7 +27,6 @@ class MenuView():
 
 		response = input("Veuillez sélectionner une des options disponibles en entrant son numéro\n")
 		Controllers.MenuController.export_menu(response)
-
 
 	@staticmethod
 	def load_menu():
