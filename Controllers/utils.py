@@ -12,17 +12,21 @@ class Util():
 
 		return string_input
 
-
 	@staticmethod
 	def call_options(options, response, *args):
-		if is_instance(option[response], list):
+		if isinstance(options[response], list):
+			new_args = args
+			params = options[response][1:]
 
-			params = options[response][1]
-			options[response][0](params, *args)
+			for param in reversed(params):
+				new_args = (param,) + new_args
+
+			result = options[response][0](*new_args)
 
 		else:
-			option[response](*args)
+			result = options[response](*args)
 
+		return result
 
 	@staticmethod
 	def check_date(date):
@@ -34,8 +38,7 @@ class Util():
 			return False
 
 		else:
-			return date
-
+			return date.isoformat()
 
 	@staticmethod
 	def check_response(len_options, response):
@@ -45,34 +48,10 @@ class Util():
 
 		return response
 
-
 	@staticmethod
-	def check_date_old(date):
-		split_date = date.split('/')
-		if len(split_date) != 3:
-			print("Date invalide: format invalide")
+	def check_player(all_players, input_player):
+		if input_player not in [f"{index+1}" for index in range(len(all_players))]:
+			print("Joueur invalide")
 			return False
-		for day_month_year in split_date:
-			if not day_month_year.isdigit():
-				print("Date invalide: veuillez utiliser des nombres")
-				return False
-		sday = split_date[0]
-		smonth = split_date[1]
-		syear = split_date[2]
-		if len(sday) == 1:
-			sday = "0" + sday
-		if len(smonth) == 1:
-			smonth = "0" + smonth
-		if len(syear) < 4:
-			syear = ("0"*(4-len(syear))) + syear
-		date = '/'.join([sday, smonth, syear])
-		day = int(sday)
-		month = int(smonth)
-		year = int(syear)
-		days_per_month = [None, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-		if year%4 == 0 and (year%100 != 0 or year%400 == 0):
-			days_per_month[2] = 29
-		if not (0 < month <= 12 and 0 < day <= days_per_month[month] and year < 10000):
-			print("Date invalide: cette date n'existe pas")
-			return False
-		return date
+
+		return input_player
