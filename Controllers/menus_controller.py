@@ -13,7 +13,6 @@ class MenuController():
 			'4': [Views.PlayerView.load_player, Models.Player.get_all_players()],
 			'5': Views.MenuView.export_menu,
 			'6': exit,
-			'7': Models.Round.test
 		}
 		if not Util.check_response(len(options), response):
 			Views.MenuView.main_menu()
