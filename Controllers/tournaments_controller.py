@@ -1,25 +1,22 @@
+import Controllers
 import Views
 import Models
 from .utils import Util
 
 class TournamentController():
 
+##### NEW TOURNAMENT #####
+
 	@staticmethod
-	def new_tournament(args):
-		tournament = Models.Tournament(
-			args['name'], 
-			args['place'], 
-			args['date'], 
-			args['time_control'], 
-			args['description'], 
-			args['number_rounds'],
-			[],
-			[],
-		)
-		tournament.remove_from_db()
+	def new_tournament(tournament, value):
+		tournament.players = []
+		tournament.rounds = []
 		tournament.add_to_db()
 
-		all_players = Models.Player.get_all_players()	
+		if value == '2':
+			Views.MenuView.main_menu()
+
+		all_players = Models.Player.get_all_players()
 
 		if len(all_players) < 8:
 			print("\nATTENTION")
@@ -27,79 +24,107 @@ class TournamentController():
 			print("Vous allez être redirigé(e) vers le menu d'ajout de joueur")
 			print("Vous pourrez charger ce tournoi à partir du menu principal")
 			
-			args = {}
-			Views.PlayerView.add_player_to_db(args)
+			Views.PlayerView.add_player_to_db(Models.Player(), 0)
 
 		list_players = []
-		Views.TournamentView.add_player_to_tournament(all_players, list_players)
-		
+		Views.TournamentView.add_player_to_tournament(all_players, list_players, tournament)
 
-	@classmethod
-	def add_player_to_tournament(cls, all_players, players):
+##### ADD PLAYER TO TOURNAMENT #####
+
+	@staticmethod
+	def add_player_to_tournament(all_players, players, tournament):
 		input_player = players[-1]
 		players.pop()
 
 		if input_player == '0':
-			args = {}
-			Views.PlayerView.add_player_to_db(args)
+			Views.PlayerView.add_player_to_db(Models.Player(), 0)
 
-		if cls.check_player(all_players, input_player):
+		if Util.check_player(all_players, input_player):
 			player = all_players[int(input_player)-1]
 			players.append(player)
 			all_players.pop(int(input_player)-1)
 
 		if len(players) == 8:
-			Views.TournamentView.confirm_players(all_players, players)
+			Views.TournamentView.confirm_players(all_players, players, tournament)
 
-		Views.TournamentView.add_player_to_tournament(all_players, players)
+		Views.TournamentView.add_player_to_tournament(all_players, players, tournament)
 
-	@classmethod
-	def confirm_players(cls, all_players, players, response):
-		pass
+	@staticmethod
+	def confirm_players(all_players, players, response, tournament):
+		if response == '1':
+			tournament.players = players
+			tournament.add_to_db()
+			# Add 
 
+		elif response == '2':
+			players = []
+			Views.TournamentView.add_player_to_tournament(all_players, players, tournament)
 
-	@classmethod
-	def load_tournament(cls, list_tournaments, response):
-		args = {}
-		options = {
-			'0': Views.TournamentView.new_tournament(args),
-		}
+		else:
+			print("Réponse invalide")
+			Views.TournamentView.confirm_players(all_players, players, tournament)
+
+##### LOAD TOURNAMENT #####
+
+	@staticmethod
+	def load_tournament(list_tournaments, response):
+		options = {}
+		if response in ['0', '00']:
+			options = {
+				'0': [Views.TournamentView.new_tournament, Models.Tournament(), 0],
+				'00': Views.MenuView.load_menu,
+			}
+			Util.call_options(options, response)
+
 		for index in range(len(list_tournaments)):
-			options[f"{index + 1}"] = list_tournaments[index]
+			tournament = list_tournaments[index]
+			options[f"{index + 1}"] = [
+				Views.TournamentView.load_step_tournament,
+				tournament,
+			]
 
-		if Util.check_response(response, options) or response != '0':
-			loaded_tournament = options[response]
+		if not Util.check_response(len(options), response):
+			Views.TournamentView.load_tournament(list_tournaments)
 
-			if not loaded_tournament['finished']:
+		Util.call_options(options, response)
 
-				if not loaded_tournament['players']:
-					Views.TournamentView.new_tournament({
-						'name': loaded_tournament['name'],
-						'place': loaded_tournament['place'],
-						'date': loaded_tournament['date'],
-						'time_control': loaded_tournament['time_control'],
-						'description': loaded_tournament['description'],
-						'number_rounds': loaded_tournament['number_rounds'],
-					})
-				else:
-					pass # TODO - Add round to tournament
+	@classmethod
+	def load_step_tournament(cls, tournament, response):
+		options = {
+			'1': None,
+			'2': tournament.remove_from_db,
+			'3': Views.MenuView.load_menu,
+		}
+		if not Util.check_response(len(options), response):
+			Views.TournamentView.load_step_tournament(tournament)
 
+		if tournament.finished:
+			print("Le tournoi est déjà terminé")
+			Views.TournamentView.load_step_tournament(tournament)
 
-	def add_round_to_tournament():
-		pass
+		if not tournament.rounds:
 
+			if not tournament.players:
+				options['1'] = [cls.new_tournament, tournament, 0]
+			else:
+				options['1'] = [Views.RoundViews.create_first_round, tournament]
 
+		else:
+			options['1'] = [Views.RoundViews.create_new_round, tournament] # Add round
+
+		Util.call_options(options, response)
+		print("Le tournoi a bien été supprimé")
+		print("Retour au menu de chargement")
+		Views.MenuView.load_menu()
 
 #############################################
 # 									UTILS 									#
 #############################################
 
-
 ##### NEW TOURNAMENT #####
 
-	
 	@classmethod
-	def check_args(cls, args, **kwargs):
+	def check_args(cls, tournament, step, **kwargs):
 		key = list(kwargs.keys())[0]
 		value = list(kwargs.values())[0]
 		value = Util.input_format(value)
@@ -110,29 +135,24 @@ class TournamentController():
 			'date': Util.check_date,
 			'time_control': cls.check_time_control,
 			'description': cls.check_description,
-			'number_rounds': cls.check_number_rounds,
-			'response': [Util.check_response, 2],
+			'response': [Util.check_response, 3],
 		}
-		value = Util.call_option(options, key, value)
-		if key == 'response':
-
-		value = options[key](value)
+		value = Util.call_options(options, key, value)
 
 		if value:
-			args[key] = value
 
 			if key == 'response':
 					options = {
-						'1': ,
-						'2': ,
+						'1': [cls.new_tournament, tournament, value],
+						'2': [cls.new_tournament, tournament, value],
+						'3': Views.MenuView.main_menu,
 					}
-				if value == '1':
-					args = {}
-				else:
-					cls.new_tournament(args)
+					Util.call_options(options, value)
 
-		Views.TournamentView.new_tournament(args)
+			setattr(tournament, key, value)
+			step += 1
 
+		Views.TournamentView.new_tournament(tournament, step)
 
 	@staticmethod
 	def check_name(name):
@@ -140,12 +160,11 @@ class TournamentController():
 			print("Nom invalide: entrée vide")
 			return False
 
-		if name in Models.Tournament.get_name_tournaments():
+		if Models.Tournament.get_from_db(name):
 			print("Nom invalide: nom déjà existant")
 			return False
 
 		return name
-
 
 	@staticmethod
 	def check_place(place):
@@ -154,7 +173,6 @@ class TournamentController():
 			return False
 
 		return place
-
 
 	@staticmethod
 	def check_time_control(time_control):
@@ -169,39 +187,9 @@ class TournamentController():
 		}
 		return options[time_control]
 
-
 	@staticmethod
 	def check_description(description):
 		if description == "":
 			description = "Aucun commentaire"
 
 		return description
-
-
-	@staticmethod
-	def check_number_rounds(number_rounds):
-		if type(number_rounds) == int:
-			return number_rounds
-
-		if not number_rounds.isdigit():
-			print("Nombre de tours invalide")
-			return False
-
-		if not (0 < int(number_rounds) < 8):
-			print("Nombre de tours invalide")
-			return False
-
-		return number_rounds
-
-
-##### ADD PLAYER TO TOURNAMENT #####
-
-
-	@staticmethod
-	def check_player(all_players, input_player):
-		if input_player not in [f"{index+1}" for index in range(len(all_players))]:
-			print("Joueur invalide")
-			return False
-
-		return input_player
-			
