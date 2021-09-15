@@ -1,111 +1,137 @@
 import Views
 import Controllers
 
-class PlayerView():
 
-##### ADD PLAYER TO DATABASE #####
+class PlayerView:
 
-	@classmethod
-	def add_player_to_db(cls, player, step):
-		print("\nCREATION D'UN NOUVEAU JOUEUR")
+    # ===== ADD PLAYER TO DATABASE ===== #
 
-		options = {
-			0: cls.add_player_last_name,
-			1: cls.add_player_first_name,
-			2: cls.add_player_birth_date,
-			3: cls.add_player_gender,
-			4: cls.add_player_ranking,
-			5: cls.add_player_response,
-		}
-		Controllers.Util.call_options(options, step, player, step)
+    @classmethod
+    def add_player_to_db(cls, player, step):
+        print("\nCREATION D'UN NOUVEAU JOUEUR")
 
-	@staticmethod
-	def add_player_last_name(player, step):
-		last_name = input("Veuillez renseigner le nom de ce joueur\n")
+        options = {
+            0: cls.add_player_last_name,
+            1: cls.add_player_first_name,
+            2: cls.add_player_birth_date,
+            3: cls.add_player_gender,
+            4: cls.add_player_ranking,
+            5: cls.add_player_response,
+        }
+        Controllers.Util.call_options(options, step, player, step)
 
-		Controllers.PlayerController.check_args(player, step, last_name=last_name)
+    @staticmethod
+    def add_player_last_name(player, step):
+        last_name = input("Veuillez renseigner le nom de ce joueur\n")
+        Controllers.PlayerController.check_args(
+            player,
+            step,
+            last_name=last_name,
+        )
 
-	@staticmethod
-	def add_player_first_name(player, step):
-		first_name = input("Veuillez renseigner le prénom de ce joueur\n")
+    @staticmethod
+    def add_player_first_name(player, step):
+        first_name = input("Veuillez renseigner le prénom de ce joueur\n")
+        Controllers.PlayerController.check_args(
+            player,
+            step,
+            first_name=first_name,
+        )
 
-		Controllers.PlayerController.check_args(player, step, first_name=first_name)
+    @staticmethod
+    def add_player_birth_date(player, step):
+        print("Veuillez renseigner la date de naissance du joueur")
 
-	@staticmethod
-	def add_player_birth_date(player, step):
-		print("Veuillez renseigner la date de naissance du joueur")
-		birth_date = input("Format: AAAA-MM-JJ\n")
+        birth_date = input("Format: AAAA-MM-JJ\n")
+        Controllers.PlayerController.check_args(
+            player,
+            step,
+            birth_date=birth_date,
+        )
 
-		Controllers.PlayerController.check_args(player, step, birth_date=birth_date)
+    @staticmethod
+    def add_player_gender(player, step):
+        print("Veuillez renseigner le sexe du joueur")
+        print("1- Masculin")
+        print("2- Féminin")
 
-	@staticmethod
-	def add_player_gender(player, step):
-		print("Veuillez renseigner le sexe du joueur")
-		print("1- Masculin")
-		print("2- Féminin")
-		gender = input("Veuillez sélectionner une des options disponibles en entrant son numéro\n")
+        gender = input("Veuillez entrer le numéro de l'option choisie\n")
+        Controllers.PlayerController.check_args(
+            player,
+            step,
+            gender=gender,
+        )
 
-		Controllers.PlayerController.check_args(player, step, gender=gender)
+    @staticmethod
+    def add_player_ranking(player, step):
+        print("Veuillez renseigner le classement du joueur")
 
-	@staticmethod
-	def add_player_ranking(player, step):
-		print("Veuillez renseigner le classement du joueur")
-		ranking = input("Le classement est un nombre positif\n")
+        ranking = input("Le classement est un nombre positif\n")
+        Controllers.PlayerController.check_args(
+            player,
+            step,
+            ranking=ranking,
+        )
 
-		Controllers.PlayerController.check_args(player, step, ranking=ranking)
+    @staticmethod
+    def add_player_response(player, step):
+        print("Résumé du joueur:")
+        print(f"Nom: {player.last_name}")
+        print(f"Prénom: {player.first_name}")
+        print(f"Date de naissance: {player.birth_date}")
+        print(f"Sexe: {player.gender}")
+        print(f"Classement: {player.ranking}")
 
-	@staticmethod
-	def add_player_response(player, step):
-		print("Résumé du joueur:")
-		print(f"Nom: {player.last_name}")
-		print(f"Prénom: {player.first_name}")
-		print(f"Date de naissance: {player.birth_date}")
-		print(f"Sexe: {player.gender}")
-		print(f"Classement: {player.ranking}")
+        print("\nVoulez-vous continuer avec ces paramètres?")
+        print("1- Sauvegarder et ajouter un nouveau joueur")
+        print("2- Sauvegarder et revenir au menu principal")
+        print("3- Annuler et revenir au menu principal")
 
-		print("\nVoulez-vous continuer avec ces paramètres?")
-		print("1- Sauvegarder et ajouter un nouveau joueur")
-		print("2- Sauvegarder et revenir au menu principal")
-		print("3- Annuler et revenir au menu principal")
+        response = input("Veuillez entrer le numéro de l'option choisie\n")
+        Controllers.PlayerController.check_args(
+            player,
+            step,
+            response=response,
+        )
 
-		response = input("Veuillez sélectionner une des options disponibles en entrant son numéro\n")
+    # ===== LOAD PLAYERS ===== #
 
-		Controllers.PlayerController.check_args(player, step, response=response)
+    @staticmethod
+    def load_player(all_players):
+        print("\nLISTE DES JOUEURS")
+        print("0- Revenir au menu principal")
 
-##### LOAD PLAYERS #####
+        for index, player in enumerate(all_players):
+            print(
+                f"{index+1}- {player.last_name} {player.first_name} "
+                f"({player.birth_date}) / Classement: {player.ranking}"
+            )
+        response = input("Veuillez entrer le numéro de l'option choisie\n")
+        Controllers.PlayerController.load_player(all_players, response)
 
-	@staticmethod
-	def load_player(all_players):
-		print("\nLISTE DES JOUEURS")
-		print("0- Revenir au menu principal")
+    @staticmethod
+    def modify_player(all_players, player, input_player):
+        print("\nRésumé du joueur:")
+        print(f"Nom: {player.last_name}")
+        print(f"Prénom: {player.first_name}")
+        print(f"Date de naissance: {player.birth_date}")
+        print(f"Sexe: {player.gender}")
+        print(f"Classement: {player.ranking}\n")
 
-		for index, player in enumerate(all_players):
-			print(
-				f"{index+1}- {player.last_name} {player.first_name} " \
-				f"({player.birth_date}) / Classement: {player.ranking}"
-				)
-		response = input("Veuillez sélectionner une des options disponibles en entrant son numéro\n")
+        print("1- Modifier le classement du joueur")
+        print("2- Supprimer le joueur")
+        print("3- Annuler et revenir au menu principal")
 
-		Controllers.PlayerController.load_player(all_players, response)
+        response = input("Veuillez entrer le numéro de l'option choisie\n")
+        Controllers.PlayerController.modify_player(
+            all_players,
+            player,
+            response,
+            input_player,
+        )
 
-	@staticmethod
-	def modify_player(all_players, player, input_player):
-		print("\nRésumé du joueur:")
-		print(f"Nom: {player.last_name}")
-		print(f"Prénom: {player.first_name}")
-		print(f"Date de naissance: {player.birth_date}")
-		print(f"Sexe: {player.gender}")
-		print(f"Classement: {player.ranking}\n")
+    # ===== EXPORTS ===== #
 
-		print("1- Modifier le classement du joueur")
-		print("2- Supprimer le joueur")
-		print("3- Annuler et revenir au menu principal")
-		response = input("Veuillez sélectionner une des options disponibles en entrant son numéro\n")
-
-		Controllers.PlayerController.modify_player(all_players, player, response, input_player)
-
-##### EXPORTS #####
-
-	@staticmethod
-	def export_all_players():
-		Views.MenuView.export_menu()
+    @staticmethod
+    def export_all_players():
+        Views.MenuView.export_menu()
