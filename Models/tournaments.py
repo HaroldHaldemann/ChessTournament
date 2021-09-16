@@ -152,6 +152,19 @@ class Tournament:
             if tournament.finished
         ]
 
+    def export_players(self, sort):
+        if sort == "alphabetical":
+            players = sorted(
+                self.players,
+                key = itemgetter("last_name", "first_name"),
+            )
+        elif sort == "ranking":
+            players = sorted(
+                self.players,
+                reverse=True,
+            )
+        return players
+
     @classmethod
     def export_all_tournaments(cls):
         tournaments = cls.get_all_tournaments()
@@ -168,3 +181,5 @@ class Tournament:
 
         with open("./Exports/all_tournaments.json", "w", encoding="utf-8") as file:
             json.dump(all_tournaments, file, indent=2)
+
+    

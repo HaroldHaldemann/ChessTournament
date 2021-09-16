@@ -181,27 +181,3 @@ class Round:
                 return True
 
         return False
-
-    @classmethod
-    def test(cls):
-        tournament = Models.Tournament.get_from_db("test")
-        round = cls.create_first_round(tournament.players)
-        cls.add_points_to_matches(round)
-
-        tournament.rounds.append(round)
-
-        for i in range(1, 7):
-
-            ROUND = deepcopy(round)
-            round = Round(
-                ROUND.matches,
-                ROUND.met_players,
-                ROUND.players_with_id,
-            )
-            cls.create_new_round(round)
-            cls.add_points_to_matches(round)
-
-            tournament.rounds.append(round)
-
-        for R in tournament.rounds:
-            print(R.serialize())
