@@ -97,7 +97,7 @@ class PlayerController:
 
         options = {
             "1": "masculin",
-            "2": "féminin",
+            "2": "feminin",
         }
         return options[gender]
 

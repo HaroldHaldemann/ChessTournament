@@ -190,7 +190,7 @@ class TournamentView:
 
     @staticmethod
     def export_all_tournaments():
-        Models.Tournament.export_tournaments()
+        Models.Tournament.export_all_tournaments()
         print("L'ensemble des tournois vient d'être exporté vers Exports")
         Views.MenuView.export_menu()
 
