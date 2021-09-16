@@ -1,72 +1,104 @@
 from operator import itemgetter
 import Models
-from random import randint
 from copy import deepcopy
 
 
 class Round:
     def __init__(
         self,
+        name="",
         matches=[],
         met_players={},
-        players_with_id={},
         date_start="Not informed",
         date_end="Not informed",
     ):
+        self.name = name
         self.matches = matches
         self.met_players = met_players
-        self.players_with_id = players_with_id
         self.date_start = date_start
         self.date_end = date_end
 
     def serialize(self):
-        num_round = len(list(self.met_players.values())[0])
-        serialized_matches = [
-            (
-                [self.players_with_id[match[0][0]].serialize(), match[0][1]],
-                [self.players_with_id[match[1][0]].serialize(), match[1][1]],
-            )
-            for match in self.matches
-        ]
+        met_players = {}
+        for str_player in self.met_players.keys():
+            met_players[str_player] = [
+                player.serialize()
+                for player in self.met_players[str_player]
+            ]
         return {
-            f"Round {num_round}": serialized_matches,
-            "Start": self.date_start,
-            "End": self.date_end,
+            f"{self.name}": [match.serialize() for match in self.matches],
+            "met_players": met_players,
+            "start": self.date_start,
+            "end": self.date_end,
         }
+
+    @staticmethod
+    def deserialize(serialized_round):
+        keys = list(serialized_round.keys())
+        met_players_keys = serialized_round["met_players"].keys()
+
+        for str_player in met_players_keys:
+            serialized_round["met_players"][str_player] = [
+                Models.Player.deserialize(player)
+                for player in serialized_round["met_players"][str_player]
+            ]
+        return Round(
+            keys[0],
+            [
+                Models.Match.deserialize(match)
+                for match in serialized_round[keys[0]]
+            ],
+            serialized_round["met_players"],
+            serialized_round["start"],
+            serialized_round["end"],
+        )
 
     def create_first_round(PLAYERS):
         players = sorted(PLAYERS, reverse=True)
         demi_len = int(len(players) / 2)
 
         round = Round()
+        round.name = "Round 1"
 
-        for index in range(len(players)):
-            round.players_with_id[f"P{index}"] = players[-index - 1]
-            round.met_players[f"P{index}"] = []
+        for index in range(demi_len):
+            player = players[index]
+            sym_player = players[index + demi_len]
 
-            if index < demi_len:
-                round.matches.append(
-                    (
-                        [f"P{index}", 0],
-                        [f"P{index + demi_len}", 0],
-                    )
-                )
+            round.met_players[str(player)] = [sym_player]
+            round.met_players[str(sym_player)] = [player]
+
+            match = Models.Match(
+                player,
+                0,
+                sym_player,
+                0,
+            )
+            round.matches.append(match)
+
         return round
 
     def create_new_round(self):
-        players = []
+        scored_players = []
 
         for match in self.matches:
-            players.extend(match)
+            player_1 = match.player1
+            player_2 = match.player2
+            scored_players.extend((
+                [player_1, match.score1],
+                [player_2, match.score2],
+            ))
+            self.met_players[str(player_1)].append(player_2)
+            self.met_players[str(player_2)].append(player_1)
 
-        players.sort(
+        print(scored_players)
+        scored_players.sort(
             key=itemgetter(1, 0),
             reverse=True,
         )
-        self.matches = self.define_pairs(players, self.met_players)
+        self.matches = self.define_pairs(scored_players, self.met_players)
 
     @classmethod
-    def define_pairs(cls, players, met_players):
+    def define_pairs(cls, scored_players, met_players):
         matches = []
         set_indexes = []
         i = 0
@@ -79,21 +111,28 @@ class Round:
             if j == 8:
                 i, j = cls.back_to_previous_match(matches, set_indexes)
 
-            while j < len(players):
-                player_i = players[i]
-                player_j = players[j]
-                if player_i[0] in met_players[player_i[0]] or j in set_indexes:
+            while j < len(scored_players):
+                player_i = scored_players[i][0]
+                player_j = scored_players[j][0]
+
+                if player_i in met_players[str(player_i)] or j in set_indexes:
                     j += 1
 
                 else:
-                    matches.append((player_i, player_j))
+                    match = Models.Match(
+                        player_i,
+                        scored_players[i][1],
+                        player_j,
+                        scored_players[j][1],
+                    )
+                    matches.append(match)
                     set_indexes.extend([i, j])
                     i += 1
                     j = i + 1
                     break
 
             if len(matches) == 4:
-                if cls.check_pb_non_binary(players, met_players, matches):
+                if cls.check_count(scored_players, met_players, matches):
                     i, j = cls.back_to_previous_match(matches, set_indexes)
 
         return matches
@@ -107,40 +146,38 @@ class Round:
         return i, j
 
     @staticmethod
-    def add_points_to_matches(round):
-
-        for match in round.matches:
-            r = randint(1, 3)
-            if r == 1:
-                match[0][1] += 1.0
-            elif r == 2:
-                match[1][1] += 1.0
-            else:
-                match[0][1] += 0.5
-                match[1][1] += 0.5
-            round.met_players[f"{match[0][0]}"].append(f"{match[1][0]}")
-            round.met_players[f"{match[1][0]}"].append(f"{match[0][0]}")
-
-    @staticmethod
-    def check_pb_non_binary(players, met_players, matches):
-        list_players = [f"P{index}" for index in range(len(players))]
+    def check_count(players, met_players, matches):
         non_met = {}
         count = {}
 
-        for i in range(len(players)):
-            non_met[f"P{i}"] = set(list_players) - set(met_players[f"P{i}"])
-            count[f"P{i}"] = 0
+        for player in players:
+            key_player = str(player[0])
+            non_met[key_player] = [
+                PLAYER[0]
+                for PLAYER in players
+                if PLAYER[0] not in met_players[key_player]
+            ]
+            count[key_player] = 0
 
         for match in matches:
-            non_met[match[0][0]] -= set([match[1][0]])
-            non_met[match[1][0]] -= set([match[0][0]])
+            non_met[str(match.player1)] = [
+                player
+                for player in non_met[str(match.player1)]
+                if player != match.player2
+            ]
+            non_met[str(match.player2)] = [
+                player
+                for player in non_met[str(match.player2)]
+                if player != match.player1
+            ]
 
-        for i in range(len(players)):
-            for j in range(len(players)):
-                if non_met[f"P{i}"] == non_met[f"P{j}"]:
-                    count[f"P{i}"] += 1
+        for player in players:
+            key_player = str(player[0])
+            for PLAYER in players:
+                if non_met[key_player] == non_met[str(PLAYER[0])]:
+                    count[key_player] += 1
 
-            if (count[f"P{i}"] % 2 != 0) and (count[f"P{i}"] > 1):
+            if (count[key_player] % 2 != 0) and (count[key_player] > 1):
                 return True
 
         return False
