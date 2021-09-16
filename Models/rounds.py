@@ -20,7 +20,7 @@ class Round:
 
     def serialize(self):
         met_players = {}
-        for str_player in self.met_players.keys():
+        for str_player in list(self.met_players.keys()):
             met_players[str_player] = [
                 player.serialize()
                 for player in self.met_players[str_player]
@@ -35,10 +35,11 @@ class Round:
     @staticmethod
     def deserialize(serialized_round):
         keys = list(serialized_round.keys())
-        met_players_keys = serialized_round["met_players"].keys()
+        met_players_keys = list(serialized_round["met_players"].keys())
 
+        serialized_met_players = {}
         for str_player in met_players_keys:
-            serialized_round["met_players"][str_player] = [
+            serialized_met_players[str_player] = [
                 Models.Player.deserialize(player)
                 for player in serialized_round["met_players"][str_player]
             ]
@@ -48,7 +49,7 @@ class Round:
                 Models.Match.deserialize(match)
                 for match in serialized_round[keys[0]]
             ],
-            serialized_round["met_players"],
+            serialized_met_players,
             serialized_round["start"],
             serialized_round["end"],
         )

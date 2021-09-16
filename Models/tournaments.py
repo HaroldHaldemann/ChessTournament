@@ -115,8 +115,10 @@ class Tournament:
     def get_from_db(cls, name):
         Tournament = Query()
         serialized_tournament = TABLE.search(Tournament.name == name)
+
         if serialized_tournament:
             return cls.deserialize(serialized_tournament[0])
+
         else:
             return serialized_tournament
 
@@ -168,10 +170,11 @@ class Tournament:
         ]
         if sort == "alphabetical":
             players.sort(
-                key = itemgetter("last_name", "first_name"),
+                key=itemgetter("last_name", "first_name"),
             )
         elif sort == "ranking":
             players.sort(
+                key=itemgetter("ranking"),
                 reverse=True,
             )
         file_name = f"./Exports/{self.name}_players_{sort}.json"
@@ -191,15 +194,20 @@ class Tournament:
             json.dump(rounds, file, indent=2)
 
     def export_matches(self):
+        round_names = [
+            round.name
+            for round in self.rounds
+        ]
         rounds = [
             round.serialize()
             for round in self.rounds
         ]
         all_matches = []
-        for round in rounds:
+        for index in range(len(rounds)):
+            round = rounds[index]
             round.pop("met_players")
 
-            for match in round["matches"]:
+            for match in round[round_names[index]]:
                 all_matches.append((match[0][0], match[1][0]))
 
         file_name = f"./Exports/{self.name}_matches.json"

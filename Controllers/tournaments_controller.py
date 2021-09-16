@@ -244,16 +244,16 @@ class TournamentController:
     def select_tournament(export, tournaments, response):
         options = {}
         for index, tournament in enumerate(tournaments):
-            options[f"{index + 1}"] = {
+            options[f"{index + 1}"] = [
                 Models.Tournament.get_from_db,
                 tournament.name,
-            }
+            ]
         if not Util.check_response(len(options), response):
             Views.TournamentView.select_tournament(export, tournament) 
         
         tournament = Util.call_options(options, response)
 
-        if export == "round":
+        if export == "rounds":
             tournament.export_rounds()
             print("La liste des tours vient d'être exporté vers Exports")
             Views.MenuView.export_menu()
