@@ -185,19 +185,33 @@ class TournamentView:
     # ====== EXPORTS ====== #
 
     @staticmethod
-    def export_players():
-        Views.MenuView.export_menu()
-
-    @staticmethod
     def export_all_tournaments():
         Models.Tournament.export_all_tournaments()
         print("L'ensemble des tournois vient d'être exporté vers Exports")
         Views.MenuView.export_menu()
 
     @staticmethod
-    def export_rounds():
-        Views.MenuView.export_menu()
+    def select_tournament(export):
+        tournaments = Models.Tournament.get_all_tournaments()
+        print("\nLISTE DES TOURNOIS")
+        print("Veuillez choisir le tournoi dont vous souhaitez le rapport\n")
+        for index, tournament in enumerate(tournaments):
+            print(
+                f"{index+1}- "
+                f"Nom: {tournament.name}, "
+                f"Lieu: {tournament.place}, "
+                f"Date: {tournament.date}, "
+                f"Gestion du temps: {tournament.time_control}"
+            )
+
+        response = input("Veuillez entrer le numéro de l'option choisie\n") 
+        Controllers.TournamentController.select_tournament(export, response)
 
     @staticmethod
-    def export_matches():
-        Views.MenuView.export_menu()
+    def export_players():
+        print("Veuillez choisir l'ordonnement de votre rapport")
+        print("1- Par ordre alphabétique")
+        print("2- Par classement")
+
+        response = input("Veuillez entrer le numéro de l'option choisie\n")
+        Controllers.TournamentController.export_players(response)

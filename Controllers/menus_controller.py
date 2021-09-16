@@ -26,8 +26,8 @@ class MenuController:
             "1": Views.PlayerView.export_all_players,
             "2": Views.TournamentView.export_players,
             "3": Views.TournamentView.export_all_tournaments,
-            "4": Views.TournamentView.export_rounds,
-            "5": Views.TournamentView.export_matches,
+            "4": [Views.TournamentView.select_tournament, "rounds"],
+            "5": [Views.TournamentView.select_tournament, "matches"],
             "6": Views.MenuView.main_menu,
         }
         if not Util.check_response(len(options), response):
