@@ -4,6 +4,11 @@ import datetime
 class Util:
     @staticmethod
     def input_format(string_input):
+        """
+        Format the asked input of the user
+        Replace caracters with accents
+        Delete white spaces
+        """
         if type(string_input) == str:
             string_input = string_input.lower()
 
@@ -29,6 +34,13 @@ class Util:
 
     @staticmethod
     def call_options(options, response, *args):
+        """
+        Method to call the function in the value of a dictonnary
+        Calls dict[key]() or dict[key][]() if the value is a list
+        The next element of the list is the parameters of the function
+        *args corresponds to the paramaters in
+        all the function of this dictionnary
+        """
         if isinstance(options[response], list):
             new_args = args
             params = options[response][1:]
@@ -45,6 +57,9 @@ class Util:
 
     @staticmethod
     def check_date(date):
+        """
+        Check the asked date
+        """
         try:
             date = datetime.date.fromisoformat(date)
 
@@ -57,6 +72,9 @@ class Util:
 
     @staticmethod
     def check_response(len_options, response):
+        """
+        Check the response for the selection of the action to do next
+        """
         if response not in [f"{i + 1}" for i in range(len_options)]:
             print("Réponse invalide")
             return False
@@ -65,6 +83,9 @@ class Util:
 
     @staticmethod
     def check_player(all_players, input_player):
+        """
+        Check the asked player input
+        """
         if input_player not in [f"{i + 1}" for i in range(len(all_players))]:
             print("Joueur invalide")
             return False

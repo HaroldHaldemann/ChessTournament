@@ -11,6 +11,11 @@ class TournamentController:
 
     @staticmethod
     def new_tournament(tournament, value):
+        """
+        Add new tournament in db
+        Redirect to player creation view if not enough player
+        Redirect to player addition in tournament otherwise
+        """
         tournament.players = []
         tournament.rounds = []
         tournament.add_to_db()
@@ -39,6 +44,11 @@ class TournamentController:
 
     @staticmethod
     def add_player_to_tournament(all_players, players, tournament):
+        """
+        Check the response of the corresponding view
+        Redirect to add_player_to_tournament while not 8 players
+        Redirect to confirm players view otherwise
+        """
         input_player = players[-1]
         players.pop()
 
@@ -64,6 +74,10 @@ class TournamentController:
 
     @staticmethod
     def confirm_players(all_players, players, response, tournament):
+        """
+        Check the response of the corresponding view
+        Redirect to chosen view
+        """
         if response == "1":
             tournament.players = players
             tournament.add_to_db()
@@ -88,6 +102,10 @@ class TournamentController:
 
     @staticmethod
     def load_tournament(list_tournaments, response):
+        """
+        Check the response of the corresponding view
+        Redirect to chosen view
+        """
         options = {}
         if response in ["0", "00"]:
             options = {
@@ -113,6 +131,10 @@ class TournamentController:
 
     @classmethod
     def load_step_tournament(cls, tournament, response):
+        """
+        Check the response of the corresponding view
+        Redirect to chosen view
+        """
         options = {
             "1": None,
             "2": tournament.remove_from_db,
@@ -155,6 +177,9 @@ class TournamentController:
 
     @classmethod
     def check_args(cls, tournament, step, **kwargs):
+        """
+        Check the args of the new tournament view
+        """
         key = list(kwargs.keys())[0]
         value = list(kwargs.values())[0]
         value = Util.input_format(value)
@@ -186,6 +211,9 @@ class TournamentController:
 
     @staticmethod
     def check_name(name):
+        """
+        Check the tournament name
+        """
         if name == "":
             print("Nom invalide: entrée vide")
             return False
@@ -198,6 +226,9 @@ class TournamentController:
 
     @staticmethod
     def check_place(place):
+        """
+        Check the tournament place
+        """
         if place == "":
             print("Lieu invalide: entrée vide")
             return False
@@ -206,6 +237,9 @@ class TournamentController:
 
     @staticmethod
     def check_time_control(time_control):
+        """
+        Check the tournament time control
+        """
         if time_control not in ["1", "2", "3"]:
             print("Gestion de temps invalide")
             return False
@@ -219,6 +253,9 @@ class TournamentController:
 
     @staticmethod
     def check_description(description):
+        """
+        Check the tournament description
+        """
         if description == "":
             description = "Aucun commentaire"
 
@@ -228,6 +265,11 @@ class TournamentController:
 
     @staticmethod
     def export_players(tournament, response):
+        """
+        Check the response of the corresponding view
+        Calls the method to export the players of the given tournament
+        with the asked sorting
+        """
         options = {
             "1": [tournament.export_players, "alphabetical"],
             "2": [tournament.export_players, "ranking"],
@@ -242,6 +284,10 @@ class TournamentController:
 
     @staticmethod
     def select_tournament(export, tournaments, response):
+        """
+        Check the response of the corresponding view
+        Calls the method to export the asked attributes the given tournament
+        """
         options = {}
         for index, tournament in enumerate(tournaments):
             options[f"{index + 1}"] = [

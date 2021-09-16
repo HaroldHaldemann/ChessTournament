@@ -37,6 +37,10 @@ class Player:
     # ===== SERIALIZATION ===== #
 
     def serialize(self):
+        """
+        Return a serialized version of a given player
+        i.e. a dictionnary-like version of a player
+        """
         return {
             "last_name": self.last_name,
             "first_name": self.first_name,
@@ -47,6 +51,11 @@ class Player:
 
     @staticmethod
     def deserialize(serialized_player):
+        """
+        return a player version of a given serialized player
+        i.e. a player which attributes correspond to
+        the keys and the values of the serialized player
+        """
         return Player(
             serialized_player["last_name"],
             serialized_player["first_name"],
@@ -58,6 +67,10 @@ class Player:
     # ===== DATABASE ===== #
 
     def add_to_db(self):
+        """
+        Add the given player to the database
+        or update the existing player
+        """
         if self.get_from_db(self.last_name, self.first_name, self.birth_date):
             Player = Query()
             TABLE.update(
@@ -70,6 +83,9 @@ class Player:
             TABLE.insert(self.serialize())
 
     def remove_from_db(self):
+        """
+        Remove a given tournament from database
+        """
         Player = Query()
         if self.get_from_db(self.last_name, self.first_name, self.birth_date):
             TABLE.remove(
@@ -80,6 +96,11 @@ class Player:
 
     @classmethod
     def get_from_db(cls, last_name, first_name, birth_date):
+        """
+        Return the player from database with the given
+        last name, first name and birth date
+        The player is deserialized
+        """
         Player = Query()
         serialized_player = TABLE.search(
             (Player.last_name == last_name)
@@ -93,6 +114,10 @@ class Player:
 
     @classmethod
     def get_all_players(cls):
+        """
+        Return a list of all players in the database
+        The players are deserialized
+        """
         serialized_players = sorted(
             TABLE.all(),
             key=itemgetter("last_name", "first_name", "birth_date"),
@@ -103,6 +128,10 @@ class Player:
 
     @classmethod
     def export_all_players(cls, sort):
+        """
+        Create a file json in ./Exports and
+        put in it the list of all the players in the database
+        """
         players = cls.get_all_players()
         all_players = [
             player.serialize()

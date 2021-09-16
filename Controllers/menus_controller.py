@@ -6,6 +6,10 @@ from .utils import Util
 class MenuController:
     @staticmethod
     def main_menu(response):
+        """
+        Check the response of the corresponding view
+        Redirect to the chosen view
+        """
         all_players = Models.Player.get_all_players()
         options = {
             "1": [Views.TournamentView.new_tournament, Models.Tournament(), 0],
@@ -22,6 +26,10 @@ class MenuController:
 
     @staticmethod
     def export_menu(response):
+        """
+        Check the response of the corresponding view
+        Redirect to the chosen view
+        """
         options = {
             "1": Views.PlayerView.export_all_players,
             "2": [Views.TournamentView.select_tournament, "players"],
@@ -37,6 +45,10 @@ class MenuController:
 
     @staticmethod
     def load_menu(response):
+        """
+        Check the response of the corresponding view
+        Redirect to the chosen view
+        """
         options = {
             "1": [
                 Views.TournamentView.load_tournament,

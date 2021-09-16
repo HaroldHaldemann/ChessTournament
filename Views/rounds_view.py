@@ -4,6 +4,9 @@ import Controllers
 class RoundView:
     @staticmethod
     def def_number_rounds(tournament):
+        """
+        View asking the number of rounds of the given tournament
+        """
         print("Veuillez renseigner le nombre de tour (4 par défaut)")
 
         number_rounds = input("Format: nombre entre 1 et 7\n")
@@ -14,6 +17,9 @@ class RoundView:
 
     @staticmethod
     def create_first_round(tournament):
+        """
+        View asking if create a first round or going back to main menu
+        """
         print("\nCREATION DU TOUR")
         print("1- Créer un nouveau tour")
         print("2- Revenir au menu principal")
@@ -26,6 +32,10 @@ class RoundView:
 
     @staticmethod
     def start_round(tournament, round):
+        """
+        View asking to start the new round
+        for round.date_start
+        """
         print("\nDEBUT DU TOUR")
         print("\nListe des matchs")
         for match in round.matches:
@@ -53,6 +63,10 @@ class RoundView:
 
     @staticmethod
     def end_round(tournament, round):
+        """
+        View asking to end the new round
+        for round.date_end
+        """
         print("\nMATCH EN COURS\n")
 
         response = input("Veuillez entrer 1 pour terminer le tour\n")
@@ -64,6 +78,9 @@ class RoundView:
 
     @staticmethod
     def results_round(tournament, round, step):
+        """
+        Views asking the results of the given round matches
+        """
         print("\nRESULTAT DU TOUR")
         p1 = round.matches[step].player1
         s1 = round.matches[step].score1
@@ -91,6 +108,10 @@ class RoundView:
 
     @staticmethod
     def confirm_round(tournament, round):
+        """
+        Views asking confirmation of the round and
+        asking what to do next
+        """
         print("\nFINALISATION DU TOUR\n")
         for match in round.matches:
             p1 = match.player1
@@ -120,6 +141,10 @@ class RoundView:
 
     @staticmethod
     def end_tournament(tournament, winners):
+        """
+        View displaying the winner(s) of the tournament and
+        asking what to do next
+        """
         print("FIN DU TOURNOI")
         if len(winners) == 1:
             player = winners[0][0]

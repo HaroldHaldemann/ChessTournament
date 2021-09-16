@@ -33,6 +33,10 @@ class Tournament:
     # ===== SERIALIZATION ===== #
 
     def serialize(self):
+        """
+        Return a serialized version of a given tournament
+        i.e. a dictionnary-like version of a tournament
+        """
         return {
             "name": self.name,
             "place": self.place,
@@ -47,6 +51,11 @@ class Tournament:
 
     @staticmethod
     def deserialize(serialized_tournament):
+        """
+        Return a tournament version of a given serialized tournament
+        i.e. a tournament which attributes correspond to
+        the keys and the values of the serialized tournament
+        """
         return Tournament(
             serialized_tournament["name"],
             serialized_tournament["place"],
@@ -67,6 +76,10 @@ class Tournament:
     # ===== DATABASE ===== #
 
     def add_to_db(self):
+        """
+        Add the given tournament to the database
+        or update the existing tournament
+        """
         tournament = self.get_from_db(self.name)
         serialized_tournament = self.serialize()
 
@@ -96,6 +109,9 @@ class Tournament:
             TABLE.insert(serialized_tournament)
 
     def remove_from_db(self):
+        """
+        Remove a given tournament from database
+        """
         Tournament = Query()
 
         if self.get_from_db(self.name):
@@ -103,6 +119,10 @@ class Tournament:
 
     @classmethod
     def get_all_tournaments(cls):
+        """
+        Return a list of all tournaments in the database
+        The tournaments are deserialized
+        """
         tournaments = TABLE.all()
         tournaments.sort(key=itemgetter("name"))
 
@@ -113,6 +133,10 @@ class Tournament:
 
     @classmethod
     def get_from_db(cls, name):
+        """
+        Return the tournament from database with the given name
+        The tournament is deserialized
+        """
         Tournament = Query()
         serialized_tournament = TABLE.search(Tournament.name == name)
 
@@ -125,6 +149,11 @@ class Tournament:
     # ===== UTILS ===== #
 
     def define_winners(self):
+        """
+        Return a list of the winners of the given tournament
+        The tournament must be finished to be used
+        The score of the winners is displayed as well
+        """
         round = self.rounds[-1]
         players = []
 
@@ -147,6 +176,10 @@ class Tournament:
 
     @classmethod
     def get_unfinished_tournaments(cls):
+        """
+        Return a list of all unfinished tournament in the database
+        The tournament are deserialized
+        """
         return [
             tournament
             for tournament in cls.get_all_tournaments()
@@ -155,6 +188,10 @@ class Tournament:
 
     @classmethod
     def get_finished_tournaments(cls):
+        """
+        Return a list of all finished tournament in the database
+        The tournament are deserialized
+        """
         return [
             tournament
             for tournament in cls.get_all_tournaments()
@@ -164,6 +201,11 @@ class Tournament:
     # ===== EXPORTS ===== #
 
     def export_players(self, sort):
+        """
+        Create a file json in ./Exports and
+        put in it the list of the players of a given tournament
+        The sort parameters defines the ordoning rule
+        """
         players = [
             player.serialize()
             for player in self.players
@@ -182,6 +224,10 @@ class Tournament:
             json.dump(players, file, indent=2)
 
     def export_rounds(self):
+        """
+        Create a file json in ./Exports and
+        put in it the list of the rounds of a given tournament
+        """
         rounds = [
             round.serialize()
             for round in self.rounds
@@ -194,6 +240,10 @@ class Tournament:
             json.dump(rounds, file, indent=2)
 
     def export_matches(self):
+        """
+        Create a file json in ./Exports and
+        put in it the list of the matches of a given tournament
+        """
         round_names = [
             round.name
             for round in self.rounds
@@ -216,6 +266,10 @@ class Tournament:
 
     @classmethod
     def export_all_tournaments(cls):
+        """
+        Create a file json in ./Exports and
+        put in it the list of all the tournaments in the database
+        """
         tournaments = cls.get_all_tournaments()
         all_tournaments = []
 

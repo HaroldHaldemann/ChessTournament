@@ -6,6 +6,10 @@ from .utils import Util
 class PlayerController:
     @staticmethod
     def add_player_to_db(player, response):
+        """
+        Add new player in db
+        Check for redirection to chosen view
+        """
         player.add_to_db()
 
         options = {
@@ -16,6 +20,9 @@ class PlayerController:
 
     @staticmethod
     def load_player(all_players, response):
+        """
+        Check the response for the loading of a player
+        """
         if response == "0":
             Views.MenuView.main_menu()
 
@@ -27,6 +34,10 @@ class PlayerController:
 
     @staticmethod
     def modify_player(all_players, player, response, input_player):
+        """
+        Check the response for the modification of the player
+        Do the asked action of the corresponding view
+        """
         options = {
             "1": [Views.PlayerView.add_player_to_db, player, 4],
             "2": player.remove_from_db,
@@ -42,6 +53,9 @@ class PlayerController:
 
     @classmethod
     def check_args(cls, player, step, **kwargs):
+        """
+        Check the args of the add player to db view
+        """
         key = list(kwargs.keys())[0]
         value = list(kwargs.values())[0]
         value = Util.input_format(value)
@@ -81,6 +95,9 @@ class PlayerController:
 
     @staticmethod
     def check_name(name):
+        """
+        Check the last name and first name of the player
+        """
         if name == "":
             print("Nom invalide: entrée vide")
             return False
@@ -89,6 +106,9 @@ class PlayerController:
 
     @staticmethod
     def check_gender(gender):
+        """
+        Check the gender of the player
+        """
         if gender not in ["1", "2"]:
             print("Genre invalide")
             return False
@@ -101,6 +121,9 @@ class PlayerController:
 
     @staticmethod
     def check_ranking(ranking):
+        """
+        Check the ranking of the player
+        """
         if not ranking.isdigit() or ranking == "0":
             print("Classement invalide")
             return False
@@ -111,6 +134,10 @@ class PlayerController:
 
     @staticmethod
     def export_all_players(response):
+        """
+        Check the response of the corresponding view
+        Calls the export all players function with given sorting
+        """
         options = {
             "1": [Models.Player.export_all_players, "alphabetical"],
             "2": [Models.Player.export_all_players, "ranking"],

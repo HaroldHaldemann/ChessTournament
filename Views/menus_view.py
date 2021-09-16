@@ -4,6 +4,9 @@ import Controllers
 class MenuView:
     @staticmethod
     def main_menu():
+        """
+        View corresponding to the main menu
+        """
         print("\nMENU PRINCIPAL")
         print("1- Créer un nouveau tournoi")
         print("2- Charger un tournoi")
@@ -17,6 +20,9 @@ class MenuView:
 
     @staticmethod
     def export_menu():
+        """
+        View corresponding to the export menu
+        """
         print("\nMENU GENERATION DE RAPPORT")
         print("1- Liste de tous les joueurs")
         print("2- Liste de tous les joueurs d'un tournoi")
@@ -30,6 +36,9 @@ class MenuView:
 
     @staticmethod
     def load_menu():
+        """
+        View corresponding to the loading menu
+        """
         print("\nCHARGEMENT D'UN TOURNOI")
         print("1- Charger un tournoi non complété")
         print("2- Charger un tournoi complété")

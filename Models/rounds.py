@@ -18,6 +18,10 @@ class Round:
         self.date_end = date_end
 
     def serialize(self):
+        """
+        Return a serialized version of a given round
+        i.e. a dictionnary-like version of a round
+        """
         met_players = {}
         for str_player in list(self.met_players.keys()):
             met_players[str_player] = [
@@ -33,6 +37,11 @@ class Round:
 
     @staticmethod
     def deserialize(serialized_round):
+        """
+        return a round version of a given serialized round
+        i.e. a round which attributes correspond to
+        the keys and the values of the serialized round
+        """
         keys = list(serialized_round.keys())
         met_players_keys = list(serialized_round["met_players"].keys())
 
@@ -54,6 +63,10 @@ class Round:
         )
 
     def create_first_round(PLAYERS):
+        """
+        Return the first round of a tournament
+        init the attributes of the round
+        """
         players = sorted(PLAYERS, reverse=True)
         demi_len = int(len(players) / 2)
 
@@ -78,6 +91,10 @@ class Round:
         return round
 
     def create_new_round(self):
+        """
+        Create a new round from the previous one
+        add the players in met_players
+        """
         scored_players = []
 
         for match in self.matches:
@@ -99,6 +116,10 @@ class Round:
 
     @classmethod
     def define_pairs(cls, scored_players, met_players):
+        """
+        Define the matches corresponding to swiss algorithm
+        for the acutual round
+        """
         matches = []
         set_indexes = []
         i = 0
@@ -139,6 +160,10 @@ class Round:
 
     @staticmethod
     def back_to_previous_match(matches, set_indexes):
+        """
+        Pop the last element of the matches list
+        Delete the indexes and return new ones accordingly
+        """
         i = set_indexes[-2]
         j = set_indexes[-1] + 1
         matches.pop()
@@ -147,6 +172,10 @@ class Round:
 
     @staticmethod
     def check_count(players, met_players, matches):
+        """
+        Check exception for swiss algorithm with non met players i.e.
+        if a uneven number (except 1) of players have the same unmet players
+        """
         non_met = {}
         count = {}
 

@@ -8,6 +8,10 @@ from copy import deepcopy
 class RoundController:
     @staticmethod
     def check_number_rounds(tournament, number_rounds):
+        """
+        Check the number of rounds
+        Redirect to first round view
+        """
         if number_rounds == "":
             number_rounds = 4
 
@@ -26,6 +30,10 @@ class RoundController:
 
     @staticmethod
     def create_first_round(tournament, response):
+        """
+        Check the response of the corresponding view
+        Redirect to start_round view
+        """
         options = {
             "1": [Models.Round.create_first_round, tournament.players],
             "2": Views.MenuView.main_menu,
@@ -38,12 +46,22 @@ class RoundController:
 
     @staticmethod
     def create_new_round(tournament, round):
+        """
+        Assign round.name
+        Calls the method to create a new round
+        Redirect to start_round view
+        """
         round.create_new_round()
         round.name = f"Round {len(tournament.rounds) + 1}"
         Views.RoundView.start_round(tournament, round)
 
     @staticmethod
     def start_round(tournament, round, response):
+        """
+        Check the response of the corresponding view
+        Assign round.date_start
+        Redirect to end_round view
+        """
         options = {
             "1": [datetime.now().strftime, "%Y-%m-%d, %H:%M:%S"],
         }
@@ -55,6 +73,11 @@ class RoundController:
 
     @staticmethod
     def end_round(tournament, round, response):
+        """
+        Check the response of the corresponding view
+        Assign round.date_end
+        Redirect to results_round view
+        """
         options = {
             "1": [datetime.now().strftime, "%Y-%m-%d, %H:%M:%S"],
         }
@@ -66,6 +89,12 @@ class RoundController:
 
     @staticmethod
     def results_round(tournament, round, step, response):
+        """
+        Check the response of the corresponding view
+        Assign the given results to round.matches
+        Redirect to results_round view if unfinished
+        Redirect to confirm_round view if finished
+        """
         options = {
             "1": (1, 0),
             "2": (0, 1),
@@ -85,6 +114,12 @@ class RoundController:
 
     @classmethod
     def confirm_round(cls, tournament, ROUND, response):
+        """
+        Check the response of the corresponfding view
+        Add tournament to db
+        Redirect to choson view if unfinished
+        Redirect to end_tournament view if finished
+        """
         options = {
             "1": [tournament.rounds.append, ROUND],
             "2": [tournament.rounds.append, ROUND],
@@ -112,6 +147,10 @@ class RoundController:
 
     @staticmethod
     def end_tournament(tournament, winners, response):
+        """
+        Check the response of the corresponding view
+        Redirect to chosen view
+        """
         all_players = Models.Player.get_all_players()
         options = {
             "1": [Views.PlayerView.load_player, all_players],

@@ -9,6 +9,9 @@ class TournamentView:
 
     @classmethod
     def new_tournament(cls, tournament, step):
+        """
+        View corresponding to the addition of a new tournament in the database
+        """
         print("\nCREATION D'UN NOUVEAU TOURNOI")
 
         options = {
@@ -23,6 +26,9 @@ class TournamentView:
 
     @staticmethod
     def new_tournament_name(tournament, step):
+        """
+        View asking the name of the new tournament
+        """
         name = input("Veuillez renseigner le nom de ce tournoi\n")
         Controllers.TournamentController.check_args(
             tournament,
@@ -32,6 +38,9 @@ class TournamentView:
 
     @staticmethod
     def new_tournament_place(tournament, step):
+        """
+        View asking the place of the new tournament
+        """
         place = input("Veuillez renseigner le lieu de ce tournoi\n")
         Controllers.TournamentController.check_args(
             tournament,
@@ -41,6 +50,9 @@ class TournamentView:
 
     @staticmethod
     def new_tournament_date(tournament, step):
+        """
+        View asking the date of the new tournament
+        """
         print("Veuillez renseigner la date de ce tournoi")
 
         date = input("Format: AAAA-MM-JJ\n")
@@ -52,6 +64,9 @@ class TournamentView:
 
     @staticmethod
     def new_tournament_time_control(tournament, step):
+        """
+        View asking the time control of the new tournament
+        """
         print("Veuillez renseigner votre controle du temps")
         print("1- Bullet")
         print("2- Blitz")
@@ -66,6 +81,9 @@ class TournamentView:
 
     @staticmethod
     def new_tournament_description(tournament, step):
+        """
+        View asking the description of the new tournament
+        """
         print("Vous pouvez renseigner des remarques pour ce tournoi")
 
         description = input("Laissez vide dans le cas contraire\n")
@@ -77,6 +95,10 @@ class TournamentView:
 
     @staticmethod
     def new_tournament_response(tournament, step):
+        """
+        View corresponding to the confirmation of the tournament creation
+        Redirect to the chosen view
+        """
         print("Résumé du tournoi")
         print(f"Nom: {tournament.name}")
         print(f"Lieu: {tournament.place}")
@@ -100,6 +122,9 @@ class TournamentView:
 
     @staticmethod
     def add_player_to_tournament(all_players, players, tournament):
+        """
+        View asking which player to add to the given tournament
+        """
         print("\nAJOUT DE JOUEURS")
         print(f"Veuillez ajouter {8-len(players)} joueurs dans le tournoi")
 
@@ -123,6 +148,9 @@ class TournamentView:
 
     @staticmethod
     def confirm_players(all_players, players, tournament):
+        """
+        Views asking for the confirmation for the given players
+        """
         print("\nAJOUT DE JOUEURS")
         print("\nListe des joueurs:")
 
@@ -149,6 +177,9 @@ class TournamentView:
 
     @staticmethod
     def load_tournament(list_tournaments):
+        """
+        View asking which tournament to load
+        """
         print("\nCHARGEMENT D'UN TOURNOI")
         print("0- Créer un nouveau tournoi")
         print("00- Annuler et revenir au menu précédent")
@@ -171,6 +202,9 @@ class TournamentView:
 
     @staticmethod
     def load_step_tournament(tournament):
+        """
+        View asking what to do whith the given tournament
+        """
         print("\nCHARGEMENT D'UN TOURNOI")
         print("1- Continuer le tournoi")
         print("2- Supprimer le tournoi")
@@ -186,12 +220,18 @@ class TournamentView:
 
     @staticmethod
     def export_all_tournaments():
+        """
+        View to display the list of all tournaments in the database
+        """
         Models.Tournament.export_all_tournaments()
         print("L'ensemble des tournois vient d'être exporté vers Exports")
         Views.MenuView.export_menu()
 
     @staticmethod
     def select_tournament(export):
+        """
+        View asking which tournament to export
+        """
         tournaments = Models.Tournament.get_all_tournaments()
         print("\nLISTE DES TOURNOIS")
         print("Veuillez choisir le tournoi dont vous souhaitez le rapport\n")
@@ -213,6 +253,9 @@ class TournamentView:
 
     @staticmethod
     def export_players(tournament):
+        """
+        View to chose the sorting of the list of all tournaments
+        """
         print("Veuillez choisir l'ordonnement de votre rapport")
         print("1- Par ordre alphabétique")
         print("2- Par classement")
