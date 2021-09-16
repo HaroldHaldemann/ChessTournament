@@ -134,4 +134,9 @@ class PlayerView:
 
     @staticmethod
     def export_all_players():
-        Views.MenuView.export_menu()
+        print("Veuillez choisir l'ordonnement de votre rapport")
+        print("1- Par ordre alphabétique")
+        print("2- Par classement")
+
+        response = input("Veuillez entrer le numéro de l'option choisie\n")
+        Controllers.PlayerController.export_all_players(response)

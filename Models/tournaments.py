@@ -177,7 +177,7 @@ class Tournament:
                 key=itemgetter("ranking"),
                 reverse=True,
             )
-        file_name = f"./Exports/{self.name}_players_{sort}.json"
+        file_name = f"./Exports/tournament_{self.name}_players_{sort}.json"
         with open(file_name, "w", encoding="utf-8") as file:
             json.dump(players, file, indent=2)
 
@@ -189,7 +189,7 @@ class Tournament:
         for round in rounds:
             round.pop("met_players")
         
-        file_name = f"./Exports/{self.name}_rounds.json"
+        file_name = f"./Exports/tournament_{self.name}_rounds.json"
         with open(file_name, "w", encoding="utf-8") as file:
             json.dump(rounds, file, indent=2)
 
@@ -210,7 +210,7 @@ class Tournament:
             for match in round[round_names[index]]:
                 all_matches.append((match[0][0], match[1][0]))
 
-        file_name = f"./Exports/{self.name}_matches.json"
+        file_name = f"./Exports/tournament_{self.name}_matches.json"
         with open(file_name, "w", encoding="utf-8") as file:
             json.dump(all_matches, file, indent=2)
 

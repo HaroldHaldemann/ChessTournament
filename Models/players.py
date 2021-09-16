@@ -1,5 +1,6 @@
 from tinydb import TinyDB, Query
 from operator import itemgetter
+import json
 
 DATABASE = TinyDB("database.json", encoding="utf-8")
 TABLE = DATABASE.table("players")
@@ -33,6 +34,8 @@ class Player:
     def __str__(self):
         return f"{self.last_name} {self.first_name} {self.birth_date}"
 
+    # ===== SERIALIZATION ===== #
+
     def serialize(self):
         return {
             "last_name": self.last_name,
@@ -51,6 +54,8 @@ class Player:
             serialized_player["gender"],
             serialized_player["ranking"],
         )
+
+    # ===== DATABASE ===== #
 
     def add_to_db(self):
         if self.get_from_db(self.last_name, self.first_name, self.birth_date):
@@ -93,3 +98,27 @@ class Player:
             key=itemgetter("last_name", "first_name", "birth_date"),
         )
         return [cls.deserialize(player) for player in serialized_players]
+
+    # ===== EXPORTS ===== #
+
+    @classmethod
+    def export_all_players(cls, sort):
+        players = cls.get_all_players()
+        all_players = [
+            player.serialize()
+            for player in players
+        ]
+        if sort == "alphabetical":
+            all_players.sort(
+                key=itemgetter("last_name", "first_name"),
+            )
+        elif sort == "ranking":
+            all_players.sort(
+                key=itemgetter("ranking"),
+                reverse=True,
+            )
+
+        file_name = f"./Exports/all_players_{sort}.json"
+        with open(file_name, "w", encoding="utf-8") as file:
+            json.dump(all_players, file, indent=2)
+

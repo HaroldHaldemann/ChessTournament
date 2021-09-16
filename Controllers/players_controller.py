@@ -108,3 +108,17 @@ class PlayerController:
             return False
 
         return int(ranking)
+
+    @staticmethod
+    def export_all_players(response):
+        options = {
+            "1": [Models.Player.export_all_players, "alphabetical"],
+            "2": [Models.Player.export_all_players, "ranking"],
+        }
+
+        if not Util.check_response(len(options), response):
+            Views.PlayerView.export_all_players() 
+        
+        Util.call_options(options, response)
+        print("La liste des joueurs vient d'être exporté vers Exports")
+        Views.MenuView.export_menu()
