@@ -178,15 +178,33 @@ class Tournament:
         with open(file_name, "w", encoding="utf-8") as file:
             json.dump(players, file, indent=2)
 
-
     def export_rounds(self):
         rounds = [
             round.serialize()
             for round in self.rounds
         ]
+        for round in rounds:
+            round.pop("met_players")
+        
         file_name = f"./Exports/{self.name}_rounds.json"
         with open(file_name, "w", encoding="utf-8") as file:
             json.dump(rounds, file, indent=2)
+
+    def export_matches(self):
+        rounds = [
+            round.serialize()
+            for round in self.rounds
+        ]
+        all_matches = []
+        for round in rounds:
+            round.pop("met_players")
+
+            for match in round["matches"]:
+                all_matches.append((match[0][0], match[1][0]))
+
+        file_name = f"./Exports/{self.name}_matches.json"
+        with open(file_name, "w", encoding="utf-8") as file:
+            json.dump(all_matches, file, indent=2)
 
     @classmethod
     def export_all_tournaments(cls):
