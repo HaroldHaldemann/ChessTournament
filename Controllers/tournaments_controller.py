@@ -1,6 +1,8 @@
 import Views
+import Controllers
 import Models
 from .utils import Util
+from copy import deepcopy
 
 
 class TournamentController:
@@ -63,7 +65,7 @@ class TournamentController:
         if response == "1":
             tournament.players = players
             tournament.add_to_db()
-            # Add
+            Views.RoundView.def_number_rounds(tournament)
 
         elif response == "2":
             players = []
@@ -117,9 +119,10 @@ class TournamentController:
         if not Util.check_response(len(options), response):
             Views.TournamentView.load_step_tournament(tournament)
 
-        if tournament.finished:
+        if tournament.finished and response == "1":
             print("Le tournoi est déjà terminé")
-            Views.TournamentView.load_step_tournament(tournament)
+            winners = tournament.define_winners()
+            Views.RoundView.end_tournament(tournament, winners)
 
         if not tournament.rounds:
 
@@ -131,14 +134,16 @@ class TournamentController:
                 ]
             else:
                 options["1"] = [
-                    Views.RoundViews.create_first_round,
+                    Views.RoundView.def_number_rounds,
                     tournament,
                 ]
         else:
+            round = deepcopy(tournament.rounds[-1])
             options["1"] = [
-                Views.RoundViews.create_new_round,
+                Controllers.RoundController.create_new_round,
                 tournament,
-            ]  # Add round
+                round,
+            ]
         Util.call_options(options, response)
         print("Le tournoi a bien été supprimé")
         print("Retour au menu de chargement")
