@@ -1,4 +1,5 @@
 from tinydb import TinyDB, Query
+from operator import itemgetter
 import Models
 
 DATABASE = TinyDB("database.json")
@@ -25,6 +26,7 @@ class Tournament:
         self.players = players
         self.number_rounds = number_rounds
         self.rounds = rounds
+        self.finished = (len(self.rounds) == self.number_rounds)
 
     def serialize(self):
         return {
@@ -33,56 +35,80 @@ class Tournament:
             "date": self.date,
             "time_control": self.time_control,
             "description": self.description,
-            "players": self.players,
+            "players": [player.serialize() for player in self.players],
             "number_rounds": self.number_rounds,
-            "rounds": self.rounds,
-            "finished": (len(self.rounds) == self.number_rounds + 1),
+            "rounds": [round.serialize() for round in self.rounds],
+            "finished": self.finished,
         }
 
     @staticmethod
     def deserialize(serialized_tournament):
-        tournament = Tournament()
-        tournament.name = serialized_tournament["name"]
-        tournament.place = serialized_tournament["place"]
-        tournament.date = serialized_tournament["date"]
-        tournament.time_control = serialized_tournament["time_control"]
-        tournament.description = serialized_tournament["description"]
-        tournament.players = [
-            Models.Player.deserialize(player)
-            for player in serialized_tournament["players"]
-        ]
-        tournament.number_rounds = serialized_tournament["number_rounds"]
-        tournament.rounds = serialized_tournament["rounds"]
-        tournament.finished = serialized_tournament["finished"]
-        return tournament
+        return Tournament(
+            serialized_tournament["name"],
+            serialized_tournament["place"],
+            serialized_tournament["date"],
+            serialized_tournament["time_control"],
+            serialized_tournament["description"],
+            [
+                Models.Player.deserialize(player)
+                for player in serialized_tournament["players"]
+            ],
+            serialized_tournament["number_rounds"],
+            [
+                Models.Round.deserialize(round)
+                for round in serialized_tournament["rounds"]
+            ],
+        )
 
     def add_to_db(self):
         tournament = self.get_from_db(self.name)
+        serialized_tournament = self.serialize()
 
         if tournament:
             Tournament = Query()
 
-            if self.number_rounds != 4:
+            if self.players != tournament.players:
                 TABLE.update(
-                    {"number_rounds": self.rounds},
+                    {"players": serialized_tournament["players"]},
                     Tournament.name == tournament.name,
                 )
             if self.rounds != tournament.rounds:
                 TABLE.update(
-                    {"rounds": self.rounds},
+                    {
+                        "rounds": serialized_tournament["rounds"],
+                        "number_rounds": serialized_tournament["number_rounds"]
+                    },
                     Tournament.name == tournament.name,
                 )
-            if self.players != tournament.players:
-                serialized_players = [
-                    player.serialize()
-                    for player in self.players
-                ]
+            if self.finished != tournament.finished:
                 TABLE.update(
-                    {"players": serialized_players},
+                    {"finished": serialized_tournament["finished"]},
                     Tournament.name == tournament.name,
                 )
+
         else:
-            TABLE.insert(self.serialize())
+            TABLE.insert(serialized_tournament)
+
+    def define_winners(self):
+        round = self.rounds[-1]
+        players = []
+
+        for match in round.matches:
+            players.append([match.player1, match.score1])
+            players.append([match.player2, match.score2])
+
+        players.sort(
+            key=itemgetter(1, 0),
+            reverse=True,
+        )
+        winners = []
+        i = 0
+
+        while players[0][1] == players[i][1]:
+            winners.append(players[i])
+            i += 1
+
+        return winners
 
     def remove_from_db(self):
         Tournament = Query()
@@ -91,22 +117,13 @@ class Tournament:
             TABLE.remove(Tournament.name == self.name)
 
     @classmethod
-    def get_all_tournament(cls):
-        Tournament = Query()
+    def get_all_tournaments(cls):
         tournaments = TABLE.all()
-
-        sorted_dates = sorted(
-            [tournament["date"] for tournament in tournaments],
-            reverse=True,
-        )
-        sorted_tournaments = []
-
-        for date in sorted_dates:
-            sorted_tournaments += TABLE.search(Tournament.date == date)
+        tournaments.sort(key=itemgetter("name"))
 
         return [
             cls.deserialize(tournament)
-            for tournament in sorted_tournaments
+            for tournament in tournaments
         ]
 
     @classmethod
@@ -122,7 +139,7 @@ class Tournament:
     def get_unfinished_tournaments(cls):
         return [
             tournament
-            for tournament in cls.get_all_tournament()
+            for tournament in cls.get_all_tournaments()
             if not tournament.finished
         ]
 
@@ -130,6 +147,6 @@ class Tournament:
     def get_finished_tournaments(cls):
         return [
             tournament
-            for tournament in cls.get_all_tournament()
+            for tournament in cls.get_all_tournaments()
             if tournament.finished
         ]
