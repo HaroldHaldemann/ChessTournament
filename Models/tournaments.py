@@ -223,5 +223,3 @@ class Tournament:
         file_name = "./Exports/all_tournaments.json"
         with open(file_name, "w", encoding="utf-8") as file:
             json.dump(all_tournaments, file, indent=2)
-
-    
