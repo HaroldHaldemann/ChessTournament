@@ -205,13 +205,13 @@ class TournamentView:
             )
 
         response = input("Veuillez entrer le numéro de l'option choisie\n") 
-        Controllers.TournamentController.select_tournament(export, response)
+        Controllers.TournamentController.select_tournament(export, tournaments, response)
 
     @staticmethod
-    def export_players():
+    def export_players(tournament):
         print("Veuillez choisir l'ordonnement de votre rapport")
         print("1- Par ordre alphabétique")
         print("2- Par classement")
 
         response = input("Veuillez entrer le numéro de l'option choisie\n")
-        Controllers.TournamentController.export_players(response)
+        Controllers.TournamentController.export_players(tournament, response)

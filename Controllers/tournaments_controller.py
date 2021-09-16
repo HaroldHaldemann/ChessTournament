@@ -151,11 +151,7 @@ class TournamentController:
         print("Retour au menu de chargement")
         Views.MenuView.load_menu()
 
-    # =========================================== #
-    #                   UTILS                     #
-    # =========================================== #
-
-    # ====== NEW TOURNAMENT ====== #
+    # ===== UTILS ===== #
 
     @classmethod
     def check_args(cls, tournament, step, **kwargs):
@@ -227,3 +223,40 @@ class TournamentController:
             description = "Aucun commentaire"
 
         return description
+
+    # ===== EXPORTS ===== #
+
+    @staticmethod
+    def export_players(tournament, response):
+        options = {
+            "1": [tournament.export_players, "alphabetical"],
+            "2": [tournament.export_players, "ranking"],
+        }
+
+        if not Util.check_response(len(options), response):
+            Views.TournamentView.select_players(tournament) 
+        
+        Util.call_options(options, response)
+        print("La liste des joueurs vient d'être exporté vers Exports")
+        Views.MenuView.export_menu()
+
+    @staticmethod
+    def select_tournament(export, tournaments, response):
+        options = {}
+        for index, tournament in enumerate(tournaments):
+            options[f"{index + 1}"] = {
+                Models.Tournament.get_from_db,
+                tournament.name,
+            }
+        if not Util.check_response(len(options), response):
+            Views.TournamentView.select_tournament(export, tournament) 
+        
+        tournament = Util.call_options(options, response)
+
+        if export == "round":
+            tournament.export_rounds()
+            print("La liste des tours vient d'être exporté vers Exports")
+            Views.MenuView.export_menu()
+        
+        elif export == "players":
+            Views.TournamentView.export_players(tournament)
