@@ -7,6 +7,21 @@ class Util:
         if type(string_input) == str:
             string_input = string_input.lower()
 
+            for caracter in ["à", "â", "ä"]:
+                string_input.replace(caracter, "a")
+
+            for caracter in ["é", "è", "ê", "ë"]:
+                string_input.replace(caracter, "e")
+
+            for caracter in ["î", "ï"]:
+                string_input.replace(caracter, "i")
+
+            for caracter in ["ô", "ö"]:
+                string_input.replace(caracter, "o")
+
+            for caracter in ["ù", "û", "ü"]:
+                string_input.replace(caracter, "u")
+            
             split_input = string_input.split(" ")
             string_input = "".join(split_input)
 
