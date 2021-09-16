@@ -25,6 +25,14 @@ class Player:
             return self.ranking < other.ranking
         return False
 
+    def __eq__(self, other):
+        return (self.last_name == other.last_name) \
+            & (self.first_name == other.first_name) \
+            & (self.birth_date == other.birth_date)
+
+    def __str__(self):
+        return f"{self.last_name} {self.first_name} {self.birth_date}"
+
     def serialize(self):
         return {
             "last_name": self.last_name,
@@ -36,13 +44,13 @@ class Player:
 
     @staticmethod
     def deserialize(serialized_player):
-        player = Player()
-        player.last_name = serialized_player["last_name"]
-        player.first_name = serialized_player["first_name"]
-        player.birth_date = serialized_player["birth_date"]
-        player.gender = serialized_player["gender"]
-        player.ranking = serialized_player["ranking"]
-        return player
+        return Player(
+            serialized_player["last_name"],
+            serialized_player["first_name"],
+            serialized_player["birth_date"],
+            serialized_player["gender"],
+            serialized_player["ranking"],
+        )
 
     def add_to_db(self):
         if self.get_from_db(self.last_name, self.first_name, self.birth_date):
