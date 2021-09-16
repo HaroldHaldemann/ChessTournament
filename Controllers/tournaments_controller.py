@@ -257,6 +257,11 @@ class TournamentController:
             tournament.export_rounds()
             print("La liste des tours vient d'être exporté vers Exports")
             Views.MenuView.export_menu()
+
+        elif export == "matches":
+            tournament.export_matches()
+            print("La liste des matchs vient d'être exporté vers Exports")
+            Views.MenuView.export_menu()
         
         elif export == "players":
             Views.TournamentView.export_players(tournament)

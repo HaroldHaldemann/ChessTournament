@@ -24,7 +24,7 @@ class MenuController:
     def export_menu(response):
         options = {
             "1": Views.PlayerView.export_all_players,
-            "2": Views.TournamentView.export_players,
+            "2": [Views.TournamentView.select_tournament, "players"],
             "3": Views.TournamentView.export_all_tournaments,
             "4": [Views.TournamentView.select_tournament, "rounds"],
             "5": [Views.TournamentView.select_tournament, "matches"],
