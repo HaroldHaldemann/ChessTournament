@@ -11,15 +11,17 @@ class RoundController:
         if number_rounds == "":
             number_rounds = 4
 
-        if not number_rounds.isdigit():
-            print("Nombre de tours invalide")
-            Views.RoundView.def_number_rounds(tournament)
+        else:
+            if not number_rounds.isdigit():
+                print("Nombre de tours invalide")
+                Views.RoundView.def_number_rounds(tournament)
 
-        if not (0 < int(number_rounds) < 8):
-            print("Nombre de tours invalide")
-            Views.RoundView.def_number_rounds(tournament)
+            if not (0 < int(number_rounds) < 8):
+                print("Nombre de tours invalide")
+                Views.RoundView.def_number_rounds(tournament)
 
         tournament.number_rounds = int(number_rounds)
+
         Views.RoundView.create_first_round(tournament)
 
     @staticmethod
@@ -37,12 +39,13 @@ class RoundController:
     @staticmethod
     def create_new_round(tournament, round):
         round.create_new_round()
+        round.name = f"Round {len(tournament.rounds) + 1}"
         Views.RoundView.start_round(tournament, round)
 
     @staticmethod
     def start_round(tournament, round, response):
         options = {
-            "0": [datetime.now().strftime, "%Y-%m-%d, %H:%M:%S"],
+            "1": [datetime.now().strftime, "%Y-%m-%d, %H:%M:%S"],
         }
         if not Util.check_response(len(options), response):
             Views.RoundView.start_round(tournament, round)
@@ -53,7 +56,7 @@ class RoundController:
     @staticmethod
     def end_round(tournament, round, response):
         options = {
-            "0": [datetime.now().strftime, "%Y-%m-%d, %H:%M:%S"],
+            "1": [datetime.now().strftime, "%Y-%m-%d, %H:%M:%S"],
         }
         if not Util.check_response(len(options), response):
             Views.RoundView.end_round(tournament, round)
@@ -71,12 +74,12 @@ class RoundController:
         if not Util.check_response(len(options), response):
             Views.RoundView.results_round(tournament, round, step)
 
-        round.matches[step][0][1] += options[response][0]
-        round.matches[step][1][1] += options[response][1]
+        round.matches[step].score1 += options[response][0]
+        round.matches[step].score2 += options[response][1]
         step += 1
 
         if step == 4:
-            Views.RoundView.new_round(tournament, round)
+            Views.RoundView.confirm_round(tournament, round)
 
         Views.RoundView.results_round(tournament, round, step)
 
@@ -98,8 +101,23 @@ class RoundController:
             Views.MenuView.main_menu()
 
         if len(tournament.rounds) == tournament.number_rounds:
-            Views.RoundView.end_tournament(tournament)
+            tournament.finished = True
+            tournament.add_to_db()
+            winners = tournament.define_winners()
+            Views.RoundView.end_tournament(tournament, winners)
 
         else:
             round = deepcopy(ROUND)
             cls.create_new_round(tournament, round)
+
+    @staticmethod
+    def end_tournament(tournament, winners, response):
+        all_players = Models.Player.get_all_players()
+        options = {
+            "1": [Views.PlayerView.load_player, all_players],
+            "2": Views.MenuView.main_menu,
+        }
+        if not Util.check_response(len(options), response):
+            Views.RoundView.end_tournament(tournament, winners)
+
+        Util.call_options(options, response)
