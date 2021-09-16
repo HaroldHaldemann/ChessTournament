@@ -21,7 +21,7 @@ class Util:
 
             for caracter in ["ù", "û", "ü"]:
                 string_input.replace(caracter, "u")
-            
+
             split_input = string_input.split(" ")
             string_input = "".join(split_input)
 

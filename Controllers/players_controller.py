@@ -38,9 +38,7 @@ class PlayerController:
         all_players.pop(int(input_player) - 1)
         Views.PlayerView.load_player(all_players)
 
-    # =========================================== #
-    #                    UTILS                    #
-    # =========================================== #
+    # ===== UTILS ===== #
 
     @classmethod
     def check_args(cls, player, step, **kwargs):
@@ -109,6 +107,8 @@ class PlayerController:
 
         return int(ranking)
 
+    # ===== EXPORTS ===== #
+
     @staticmethod
     def export_all_players(response):
         options = {
@@ -117,8 +117,8 @@ class PlayerController:
         }
 
         if not Util.check_response(len(options), response):
-            Views.PlayerView.export_all_players() 
-        
+            Views.PlayerView.export_all_players()
+
         Util.call_options(options, response)
         print("La liste des joueurs vient d'être exporté vers Exports")
         Views.MenuView.export_menu()

@@ -1,6 +1,5 @@
 from operator import itemgetter
 import Models
-from copy import deepcopy
 
 
 class Round:

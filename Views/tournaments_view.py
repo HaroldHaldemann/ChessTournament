@@ -204,8 +204,12 @@ class TournamentView:
                 f"Gestion du temps: {tournament.time_control}"
             )
 
-        response = input("Veuillez entrer le numéro de l'option choisie\n") 
-        Controllers.TournamentController.select_tournament(export, tournaments, response)
+        response = input("Veuillez entrer le numéro de l'option choisie\n")
+        Controllers.TournamentController.select_tournament(
+            export,
+            tournaments,
+            response,
+        )
 
     @staticmethod
     def export_players(tournament):

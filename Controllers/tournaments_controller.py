@@ -234,8 +234,8 @@ class TournamentController:
         }
 
         if not Util.check_response(len(options), response):
-            Views.TournamentView.select_players(tournament) 
-        
+            Views.TournamentView.select_players(tournament)
+
         Util.call_options(options, response)
         print("La liste des joueurs vient d'être exporté vers Exports")
         Views.MenuView.export_menu()
@@ -249,8 +249,8 @@ class TournamentController:
                 tournament.name,
             ]
         if not Util.check_response(len(options), response):
-            Views.TournamentView.select_tournament(export, tournament) 
-        
+            Views.TournamentView.select_tournament(export, tournament)
+
         tournament = Util.call_options(options, response)
 
         if export == "rounds":
@@ -262,6 +262,6 @@ class TournamentController:
             tournament.export_matches()
             print("La liste des matchs vient d'être exporté vers Exports")
             Views.MenuView.export_menu()
-        
+
         elif export == "players":
             Views.TournamentView.export_players(tournament)

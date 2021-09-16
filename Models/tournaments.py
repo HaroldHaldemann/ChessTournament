@@ -188,7 +188,7 @@ class Tournament:
         ]
         for round in rounds:
             round.pop("met_players")
-        
+
         file_name = f"./Exports/tournament_{self.name}_rounds.json"
         with open(file_name, "w", encoding="utf-8") as file:
             json.dump(rounds, file, indent=2)

@@ -121,4 +121,3 @@ class Player:
         file_name = f"./Exports/all_players_{sort}.json"
         with open(file_name, "w", encoding="utf-8") as file:
             json.dump(all_players, file, indent=2)
-
