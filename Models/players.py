@@ -1,7 +1,7 @@
 from tinydb import TinyDB, Query
 from operator import itemgetter
 
-DATABASE = TinyDB("database.json")
+DATABASE = TinyDB("database.json", encoding="utf-8")
 TABLE = DATABASE.table("players")
 
 

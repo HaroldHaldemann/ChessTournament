@@ -1,8 +1,9 @@
 from tinydb import TinyDB, Query
 from operator import itemgetter
+import json
 import Models
 
-DATABASE = TinyDB("database.json")
+DATABASE = TinyDB("database.json", encoding="utf-8")
 TABLE = DATABASE.table("tournaments")
 
 
@@ -150,3 +151,20 @@ class Tournament:
             for tournament in cls.get_all_tournaments()
             if tournament.finished
         ]
+
+    @classmethod
+    def export_all_tournaments(cls):
+        tournaments = cls.get_all_tournaments()
+        all_tournaments = []
+
+        for tournament in tournaments:
+            tournament = tournament.serialize()
+            tournament.pop("finished")
+
+            for round in tournament["rounds"]:
+                round.pop("met_players")
+
+            all_tournaments.append(tournament)
+
+        with open("./Exports/all_tournaments.json", "w", encoding="utf-8") as file:
+            json.dump(all_tournaments, file, indent=2)
