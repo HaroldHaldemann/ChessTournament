@@ -30,7 +30,9 @@ class TournamentController:
 
         list_players = []
         Views.TournamentView.add_player_to_tournament(
-            all_players, list_players, tournament
+            all_players,
+            list_players,
+            tournament,
         )
 
     # ===== ADD PLAYER TO TOURNAMENT ===== #
