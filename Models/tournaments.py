@@ -8,6 +8,7 @@ TABLE = DATABASE.table("tournaments")
 
 
 class Tournament:
+
     def __init__(
         self,
         name="",
@@ -28,6 +29,8 @@ class Tournament:
         self.number_rounds = number_rounds
         self.rounds = rounds
         self.finished = (len(self.rounds) == self.number_rounds)
+
+    # ===== SERIALIZATION ===== #
 
     def serialize(self):
         return {
@@ -61,6 +64,8 @@ class Tournament:
             ],
         )
 
+    # ===== DATABASE ===== #
+
     def add_to_db(self):
         tournament = self.get_from_db(self.name)
         serialized_tournament = self.serialize()
@@ -90,27 +95,6 @@ class Tournament:
         else:
             TABLE.insert(serialized_tournament)
 
-    def define_winners(self):
-        round = self.rounds[-1]
-        players = []
-
-        for match in round.matches:
-            players.append([match.player1, match.score1])
-            players.append([match.player2, match.score2])
-
-        players.sort(
-            key=itemgetter(1, 0),
-            reverse=True,
-        )
-        winners = []
-        i = 0
-
-        while players[0][1] == players[i][1]:
-            winners.append(players[i])
-            i += 1
-
-        return winners
-
     def remove_from_db(self):
         Tournament = Query()
 
@@ -136,6 +120,29 @@ class Tournament:
         else:
             return serialized_tournament
 
+    # ===== UTILS ===== #
+
+    def define_winners(self):
+        round = self.rounds[-1]
+        players = []
+
+        for match in round.matches:
+            players.append([match.player1, match.score1])
+            players.append([match.player2, match.score2])
+
+        players.sort(
+            key=itemgetter(1, 0),
+            reverse=True,
+        )
+        winners = []
+        i = 0
+
+        while players[0][1] == players[i][1]:
+            winners.append(players[i])
+            i += 1
+
+        return winners
+
     @classmethod
     def get_unfinished_tournaments(cls):
         return [
@@ -152,18 +159,34 @@ class Tournament:
             if tournament.finished
         ]
 
+    # ===== EXPORTS ===== #
+
     def export_players(self, sort):
+        players = [
+            player.serialize()
+            for player in self.players
+        ]
         if sort == "alphabetical":
-            players = sorted(
-                self.players,
+            players.sort(
                 key = itemgetter("last_name", "first_name"),
             )
         elif sort == "ranking":
-            players = sorted(
-                self.players,
+            players.sort(
                 reverse=True,
             )
-        return players
+        file_name = f"./Exports/{self.name}_players_{sort}.json"
+        with open(file_name, "w", encoding="utf-8") as file:
+            json.dump(players, file, indent=2)
+
+
+    def export_rounds(self):
+        rounds = [
+            round.serialize()
+            for round in self.rounds
+        ]
+        file_name = f"./Exports/{self.name}_rounds.json"
+        with open(file_name, "w", encoding="utf-8") as file:
+            json.dump(rounds, file, indent=2)
 
     @classmethod
     def export_all_tournaments(cls):
@@ -179,7 +202,8 @@ class Tournament:
 
             all_tournaments.append(tournament)
 
-        with open("./Exports/all_tournaments.json", "w", encoding="utf-8") as file:
+        file_name = "./Exports/all_tournaments.json"
+        with open(file_name, "w", encoding="utf-8") as file:
             json.dump(all_tournaments, file, indent=2)
 
     
