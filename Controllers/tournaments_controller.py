@@ -302,7 +302,6 @@ class TournamentController:
         if not Util.check_response(len(options), response):
             Views.TournamentView.select_tournament(export, tournament)
 
-
         if export == "rounds":
             tournament.export_rounds()
             print("La liste des tours vient d'être exporté vers Exports")
