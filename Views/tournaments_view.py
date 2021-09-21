@@ -235,6 +235,7 @@ class TournamentView:
         tournaments = Models.Tournament.get_all_tournaments()
         print("\nLISTE DES TOURNOIS")
         print("Veuillez choisir le tournoi dont vous souhaitez le rapport\n")
+        print("0- Revenir au menu précédent")
         for index, tournament in enumerate(tournaments):
             print(
                 f"{index+1}- "

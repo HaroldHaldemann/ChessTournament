@@ -294,10 +294,14 @@ class TournamentController:
                 Models.Tournament.get_from_db,
                 tournament.name,
             ]
+        if response == "0":
+            Views.MenuView.export_menu()
+
+        tournament = Util.call_options(options, response)
+
         if not Util.check_response(len(options), response):
             Views.TournamentView.select_tournament(export, tournament)
 
-        tournament = Util.call_options(options, response)
 
         if export == "rounds":
             tournament.export_rounds()
