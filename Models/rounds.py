@@ -107,7 +107,6 @@ class Round:
             self.met_players[str(player_1)].append(player_2)
             self.met_players[str(player_2)].append(player_1)
 
-        print(scored_players)
         scored_players.sort(
             key=itemgetter(1, 0),
             reverse=True,
