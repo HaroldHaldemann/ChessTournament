@@ -1,4 +1,5 @@
-database.json
+# reports and database
+*.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,0 +1,58 @@
+[
+  {
+    "last_name": "elessar",
+    "first_name": "aragorn",
+    "birth_date": "2933-03-01",
+    "gender": "masculin",
+    "ranking": 2000
+  },
+  {
+    "last_name": "durin",
+    "first_name": "gimli",
+    "birth_date": "2879-05-27",
+    "gender": "masculin",
+    "ranking": 1900
+  },
+  {
+    "last_name": "greenleaf",
+    "first_name": "legolas",
+    "birth_date": "0185-11-24",
+    "gender": "masculin",
+    "ranking": 1800
+  },
+  {
+    "last_name": "gondor",
+    "first_name": "boromir",
+    "birth_date": "2978-02-01",
+    "gender": "masculin",
+    "ranking": 1700
+  },
+  {
+    "last_name": "baggins",
+    "first_name": "frofo",
+    "birth_date": "2968-09-22",
+    "gender": "masculin",
+    "ranking": 1600
+  },
+  {
+    "last_name": "gamgee",
+    "first_name": "samwise",
+    "birth_date": "2980-04-06",
+    "gender": "masculin",
+    "ranking": 1500
+  },
+  {
+    "last_name": "brandybuck",
+    "first_name": "meriadoc",
+    "birth_date": "2982-06-14",
+    "gender": "masculin",
+    "ranking": 1400
+  },
+  {
+    "last_name": "took",
+    "first_name": "peregrin",
+    "birth_date": "2990-10-25",
+    "gender": "masculin",
+    "ranking": 1300
+  }
+]
