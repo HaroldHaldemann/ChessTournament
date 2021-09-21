@@ -43,6 +43,12 @@ class PlayerController:
             "2": player.remove_from_db,
             "3": Views.MenuView.main_menu,
         }
+        if not Util.check_response(len(options), response):
+            Views.PlayerView.modify_player(
+                all_players,
+                player,
+                input_player,
+            )
         Util.call_options(options, response)
         print("Le joueur a bien été supprimé")
         print("Retour au menu de chargement")
